@@ -1,0 +1,53 @@
+// data/mockPayments.ts
+import { Payment } from '../constants/Payment';
+export const MOCK_PAYMENTS: Payment[] = [
+  {
+    id: '101',
+    amount: 150.75,
+    currency: 'BRL',
+    payee: 'Fornecedor Alpha',
+    requester: 'Alice',
+    dueDate: '2025-04-10',
+    status: 'pending',
+    description: 'Material de escritório',
+  },
+  {
+    id: '102',
+    amount: 999.0,
+    currency: 'BRL',
+    payee: 'Consultoria Beta',
+    requester: 'Bob',
+    dueDate: '2025-04-15',
+    status: 'pending',
+  },
+  {
+    id: '103',
+    amount: 50.0,
+    currency: 'BRL',
+    payee: 'Serviço Online Gamma',
+    requester: 'Alice',
+    dueDate: '2025-04-08',
+    status: 'pending',
+    description: 'Assinatura mensal',
+  },
+  {
+    id: '104',
+    amount: 2500.5,
+    currency: 'BRL',
+    payee: 'Aluguel Escritório',
+    requester: 'Carlos',
+    dueDate: '2025-04-05',
+    status: 'pending',
+  },
+
+  {
+    id: '105',
+    amount: 200.0,
+    currency: 'BRL',
+    payee: 'Reembolso Delta',
+    requester: 'Alice',
+    dueDate: '2025-04-01',
+    status: 'cancelled',
+    description: 'Viagem cancelada',
+  },
+];

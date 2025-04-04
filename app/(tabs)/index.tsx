@@ -1,31 +1,51 @@
-import { StyleSheet } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { FlatList, RefreshControl, Text, View } from 'react-native';
+import PaymentListItem from '../../components/PaymentListItem';
+import { usePaymentStore } from '../../store/paymentStore';
+import styles from '../../styles/screens/TabsIndex.styles';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function PendingPaymentsScreen() {
+  const payments = usePaymentStore((state) => state.payments);
+  const pendingPayments = payments.filter((p) => p.status === 'pending');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-export default function TabOneScreen() {
+  const handleRefresh = useCallback(() => {
+    console.log('Pull to refresh triggered!');
+    setIsRefreshing(true);
+    //TODO No futuro, aqui você chamaria a função para buscar dados da API.
+    setTimeout(() => {
+      usePaymentStore.getState().resetPayments();
+      console.log('Refresh finished!');
+      setIsRefreshing(false);
+    }, 1500);
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      {pendingPayments.length === 0 && !isRefreshing ? (
+        <View style={styles.emptyContainer}>
+          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+          <Text style={styles.emptyText}>Nenhum pagamento pendente!</Text>
+          <Text style={styles.pullDownText}>
+            (Puxe para baixo para atualizar)
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={pendingPayments}
+          renderItem={({ item }) => <PaymentListItem payment={item} />}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContentContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+              tintColor='#fff'
+              colors={['#fff']}
+            />
+          }
+        />
+      )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
