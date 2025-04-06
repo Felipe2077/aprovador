@@ -6,7 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:mobile": "pnpm --filter mobile start"
+    "dev:mobile": "pnpm --filter mobile start",
+    "dev:api": "pnpm --filter api run dev",
+    "build:api": "pnpm --filter api run build",
+    "start:api": "pnpm --filter api run start"
   },
   "keywords": [],
   "author": "",
