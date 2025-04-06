@@ -1,13 +1,11 @@
 import fastify from 'fastify';
+import healthRoutes from './routes/health';
 
 const server = fastify({
   logger: true, // Habilita logs detalhados
 });
 
-// Rota de teste /ping
-server.get('/ping', async (_request, _reply) => {
-  return { pong: 'it works! API is live!' }; //
-});
+server.register(healthRoutes);
 
 const start = async () => {
   try {
