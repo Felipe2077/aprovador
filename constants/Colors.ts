@@ -14,6 +14,7 @@ export default {
   // Cores de Fundo
   background: '#111', // Fundo principal escuro
   card: '#151515', // Fundo para cards, headers, elementos elevados
+  card2: '#191919',
   inputBackground: '#2C2C2E', // Fundo para inputs (exemplo)
 
   // Cores de Acento/Primárias
@@ -26,7 +27,7 @@ export default {
   error: '#F44336', // Vermelho para erro
 
   // Outras Cores
-  border: '#272727', // Bordas sutis
+  border: '#27272A', // Bordas sutis
   separator: '#3A3A3C', // Separadores
   tint: tintColorDark, // Cor de tint/destaque padrão
   tabIconDefault: '#ccc', // Cor de ícone de tab inativo (se usar tabs)

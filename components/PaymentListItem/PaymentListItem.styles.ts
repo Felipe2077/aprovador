@@ -5,7 +5,7 @@ export default StyleSheet.create({
   itemContainer: {
     backgroundColor: Colors.card,
     padding: 15,
-    marginVertical: 16,
+    marginVertical: 10,
     marginHorizontal: 12,
     borderRadius: 8,
     flexDirection: 'row',
