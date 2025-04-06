@@ -26,7 +26,6 @@ enum PaymentStatus {
 }
 
 
-// --- Definição do Modelo User (Tabela 'users') ---
 
 model User {
   // --- Campos (Colunas) ---
