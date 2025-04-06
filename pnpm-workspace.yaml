@@ -1,0 +1,5 @@
+# ./pnpm-workspace.yaml
+packages:
+  # Inclui todos os pacotes/apps dentro da pasta 'packages/'
+  - 'packages/*'
+  # Você poderia ter outras pastas também, como 'apps/*' ou 'services/*'
