@@ -1,19 +1,25 @@
+// packages/api/src/server.ts (Início e Função main)
 import fastify from 'fastify';
+import envPlugin from './plugins/env'; // Importa
+// ... outros imports (cors, helmet, health) virão ...
 import healthRoutes from './routes/health';
 
 const server = fastify({
-  logger: true, // Habilita logs detalhados
+  logger: { level: 'info', transport: { target: 'pino-pretty' } },
 });
 
-server.register(healthRoutes);
+async function main() {
+  // Registra ENV primeiro
+  await server.register(envPlugin);
+  // ... registrar outros plugins aqui depois ...
+  await server.register(healthRoutes);
 
-const start = async () => {
   try {
-    await server.listen({ port: 3333, host: '0.0.0.0' });
-  } catch (err) {
-    server.log.error(err);
-    process.exit(1);
-  }
-};
-
-start();
+    // Usa as configs carregadas
+    await server.listen({ port: server.config.PORT, host: server.config.HOST });
+    console.log(
+      `Server running at http://${server.config.HOST}:${server.config.PORT}`
+    );
+  } catch (err) {}
+}
+main();
