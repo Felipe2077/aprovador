@@ -1,7 +1,8 @@
 // packages/api/src/server.ts (Início e Função main)
 import fastify from 'fastify';
 import envPlugin from './plugins/env'; // Importa
-// ... outros imports (cors, helmet, health) virão ...
+
+import corsPlugin from './plugins/cors';
 import healthRoutes from './routes/health';
 
 const server = fastify({
@@ -11,8 +12,10 @@ const server = fastify({
 async function main() {
   // Registra ENV primeiro
   await server.register(envPlugin);
-  // ... registrar outros plugins aqui depois ...
+
   await server.register(healthRoutes);
+
+  await server.register(corsPlugin);
 
   try {
     // Usa as configs carregadas
