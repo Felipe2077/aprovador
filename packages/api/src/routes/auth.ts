@@ -50,19 +50,14 @@ export default async function authRoutes(
   server.get(
     '/me',
     {
-      // Aplica a proteção! Executa server.authenticate ANTES do handler.
       preHandler: [server.authenticate],
     },
     async (request, reply) => {
-      // Se chegou aqui, o token é válido e request.user está populado.
-      // Acessamos o ID do usuário pelo 'sub' (subject) do token JWT.
       const userId = request.user.sub;
 
-      // Busca os dados do usuário no banco (exceto a senha!)
       const userProfile = await prisma.user.findUnique({
         where: { id: userId },
         select: {
-          // Seleciona apenas os campos seguros/necessários
           id: true,
           username: true,
           name: true,
@@ -73,11 +68,10 @@ export default async function authRoutes(
       });
 
       if (!userProfile) {
-        // Isso não deveria acontecer se o token é válido, mas por segurança:
         return reply.code(404).send({ message: 'User not found' });
       }
 
-      return userProfile; // Retorna os dados do perfil
+      return userProfile;
     }
   );
 
