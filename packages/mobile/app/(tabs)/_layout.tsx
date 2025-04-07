@@ -2,7 +2,7 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable } from 'react-native';
 
@@ -15,6 +15,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
   return (
     <Tabs
@@ -27,13 +28,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name='index'
         options={{
-          title: 'Requisições pendentes',
+          title: 'APs pendentes',
+
           tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
           headerRight: () => (
-            <Pressable>
+            <Pressable onPress={() => router.push('/(auth)/login')}>
               {({ pressed }) => (
                 <FontAwesome
-                  name='info-circle'
+                  name='sign-in'
                   size={25}
                   color={Colors.text}
                   style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
