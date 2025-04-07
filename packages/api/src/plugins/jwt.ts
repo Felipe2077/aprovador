@@ -34,14 +34,3 @@ export default fp(async (server) => {
   );
   server.log.info('Authentication decorator registered');
 });
-
-// Adiciona tipos para o Fastify saber sobre .jwt e .sign/.verify
-// (Normalmente @fastify/jwt já faz isso, mas pode ser explícito se necessário)
-// declare module 'fastify' {
-//   interface FastifyInstance { jwt: JWT; }
-//   interface FastifyRequest { jwtVerify(): Promise<void>; }
-//   interface FastifyReply { jwtSign(payload: any, options?: jwt.SignOptions): Promise<string>; }
-// }
-// declare module '@fastify/jwt' {
-//   interface FastifyJWT { user: { sub: string; role: string; name: string; /* + */ } }
-// }
