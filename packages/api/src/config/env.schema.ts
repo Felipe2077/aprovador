@@ -1,4 +1,3 @@
-// packages/api/src/config/env.schema.ts
 export const envSchema = {
   type: 'object',
   required: ['PORT', 'HOST', 'DATABASE_URL', 'JWT_SECRET'],
