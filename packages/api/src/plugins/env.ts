@@ -18,9 +18,9 @@ declare module 'fastify' {
     config: {
       PORT: number;
       HOST: string;
-      DATABASE_URL: string; // <-- Está aqui?
-      JWT_SECRET: string; // <-- Está aqui?
-      JWT_EXPIRES_IN: string; // <-- Está aqui?
+      DATABASE_URL: string;
+      JWT_SECRET: string;
+      JWT_EXPIRES_IN: string;
       /* + Futuros */
     };
   }

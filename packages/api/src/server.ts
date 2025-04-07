@@ -1,9 +1,10 @@
 // packages/api/src/server.ts (Início e Função main)
 import fastify from 'fastify';
 import corsPlugin from './plugins/cors';
-import envPlugin from './plugins/env'; // Importa
+import envPlugin from './plugins/env';
 import helmetPlugin from './plugins/helmet';
 import jwtPlugin from './plugins/jwt';
+import authRoutes from './routes/auth';
 import healthRoutes from './routes/health';
 
 const server = fastify({
@@ -11,12 +12,13 @@ const server = fastify({
 });
 
 async function main() {
-  // Registra ENV primeiro
   await server.register(envPlugin);
   await server.register(healthRoutes);
   await server.register(corsPlugin);
   await server.register(helmetPlugin);
   await server.register(jwtPlugin);
+
+  await server.register(authRoutes, { prefix: '/auth' });
 
   try {
     // Usa as configs carregadas
