@@ -15,6 +15,13 @@ export default fp(async (server) => {
 
 declare module 'fastify' {
   interface FastifyInstance {
-    config: { PORT: number; HOST: string /* + Futuros */ };
+    config: {
+      PORT: number;
+      HOST: string;
+      DATABASE_URL: string; // <-- Está aqui?
+      JWT_SECRET: string; // <-- Está aqui?
+      JWT_EXPIRES_IN: string; // <-- Está aqui?
+      /* + Futuros */
+    };
   }
 }
