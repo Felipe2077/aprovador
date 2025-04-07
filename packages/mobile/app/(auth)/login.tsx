@@ -10,13 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Colors from '../../constants/Colors'; // Ajuste o caminho
-import styles from '../../styles/screens/AuthLogin.styles'; // Ajuste o caminho
+import Colors from '../../constants/Colors';
+import styles from '../../styles/screens/AuthLogin.styles';
 
 export default function LoginScreen() {
   const router = useRouter();
 
-  // Estados locais para os inputs, erro e loading
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +52,7 @@ export default function LoginScreen() {
       style={{ flex: 1 }} // Ocupa toda a tela
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Entrar</Text>
+        <Text style={styles.title}>Acesse sua conta</Text>
 
         {/* Mostra mensagem de erro se existir */}
         {error && <Text style={styles.errorText}>{error}</Text>}

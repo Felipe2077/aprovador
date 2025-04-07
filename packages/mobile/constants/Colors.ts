@@ -15,7 +15,7 @@ export default {
   background: '#111', // Fundo principal escuro
   card: '#151515', // Fundo para cards, headers, elementos elevados
   card2: '#191919',
-  inputBackground: '#2C2C2E', // Fundo para inputs (exemplo)
+  inputBackground: '#151515', // Fundo para inputs (exemplo)
 
   // Cores de Acento/Primárias
   primary: '#FACC15', // Sua cor primária (roxo exemplo)

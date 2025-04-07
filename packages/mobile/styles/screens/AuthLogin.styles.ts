@@ -19,12 +19,15 @@ export default StyleSheet.create({
   input: {
     width: '100%',
     height: 50,
-    backgroundColor: Colors.inputBackground, // Cor de fundo para input
+    backgroundColor: Colors.inputBackground,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
     fontSize: 16,
-    color: Colors.text, // Cor do texto digitado
+    color: Colors.text,
+    borderColor: Colors.border, // Cor da borda
+    borderWidth: 1,
+    borderStyle: 'solid',
   },
   buttonContainer: {
     width: '100%',
