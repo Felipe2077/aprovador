@@ -1,5 +1,6 @@
 // packages/api/src/plugins/jwt.ts
 import fastifyJwt from '@fastify/jwt';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 
 export default fp(async (server) => {
@@ -13,17 +14,25 @@ export default fp(async (server) => {
     // }
   });
 
-  server.log.info('JWT plugin registered');
-
-  // (Opcional, mas útil) Adiciona um decorator para facilitar a verificação em rotas
-  // server.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
-  //   try {
-  //     await request.jwtVerify();
-  //   } catch (err) {
-  //     reply.send(err); // Ou um erro mais apropriado
-  //   }
-  // });
-  // Faremos a verificação com @fastify/auth ou hook depois, mais flexível
+  server.decorate(
+    'authenticate',
+    async function (
+      request: FastifyRequest,
+      reply: FastifyReply
+    ): Promise<void> {
+      try {
+        await request.jwtVerify();
+        server.log.info(
+          { user: request.user },
+          'User authenticated via decorator'
+        );
+      } catch (err) {
+        server.log.warn({ err }, 'JWT verification failed via decorator');
+        await reply.code(401).send({ message: 'Authentication required' });
+      }
+    }
+  );
+  server.log.info('Authentication decorator registered');
 });
 
 // Adiciona tipos para o Fastify saber sobre .jwt e .sign/.verify

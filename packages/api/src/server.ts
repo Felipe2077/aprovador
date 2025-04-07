@@ -1,5 +1,5 @@
-// packages/api/src/server.ts (Início e Função main)
 import fastify from 'fastify';
+import authPlugin from './plugins/auth';
 import corsPlugin from './plugins/cors';
 import envPlugin from './plugins/env';
 import helmetPlugin from './plugins/helmet';
@@ -17,11 +17,10 @@ async function main() {
   await server.register(corsPlugin);
   await server.register(helmetPlugin);
   await server.register(jwtPlugin);
-
+  await server.register(authPlugin);
   await server.register(authRoutes, { prefix: '/auth' });
 
   try {
-    // Usa as configs carregadas
     await server.listen({ port: server.config.PORT, host: server.config.HOST });
     console.log(
       `Server running at http://${server.config.HOST}:${server.config.PORT}`
