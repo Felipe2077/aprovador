@@ -42,16 +42,11 @@ export default function LoginScreen() {
       console.log('Token salvo no SecureStore');
 
       // TODO: Atualizar estado global de autenticação (ex: Zustand) aqui, se necessário.
-
-      // Navega para a tela principal (substitui a tela de login no histórico)
-      router.replace('/(tabs)/'); // Navega para a raiz do grupo (tabs)
+      router.replace('/');
     } catch (err: any) {
-      // Captura o erro lançado pelo authService
       console.error('Falha no login:', err);
-      // Define a mensagem de erro para exibir na tela
       setError(err.message || 'Ocorreu um erro inesperado.');
     } finally {
-      // Garante que o loading seja desativado, mesmo se der erro
       setIsLoading(false);
     }
   };
