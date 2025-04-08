@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
-  KeyboardAvoidingView, // Para loading
+  KeyboardAvoidingView,
   Platform,
   Text,
   TextInput,
@@ -11,12 +11,10 @@ import {
   View,
 } from 'react-native';
 
-import * as SecureStore from 'expo-secure-store';
 import Colors from '../../constants/Colors';
 import { authService } from '../../services/authService';
+import { useAuthStore } from '../../store/authStore';
 import styles from '../../styles/screens/AuthLogin.styles';
-
-const TOKEN_KEY = 'accessToken';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -25,23 +23,18 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const loginSuccess = useAuthStore((state) => state.loginSuccess);
+
   const handleLogin = async () => {
     setIsLoading(true);
     setError(null);
     console.log('Tentando login com:', { username, password });
 
     try {
-      // Chama a função de login do nosso serviço
       const response = await authService.login(username, password);
-
-      // Se a chamada foi bem-sucedida (não lançou erro)
-      console.log('Login bem-sucedido, token:', response.accessToken);
-
-      // Salva o token de forma segura
-      await SecureStore.setItemAsync(TOKEN_KEY, response.accessToken);
-      console.log('Token salvo no SecureStore');
-
-      // TODO: Atualizar estado global de autenticação (ex: Zustand) aqui, se necessário.
+      console.log('Login API success, calling loginSuccess action...');
+      await loginSuccess(response.accessToken /*, optionalUserData */);
+      console.log('loginSuccess action finished');
       router.replace('/');
     } catch (err: any) {
       console.error('Falha no login:', err);
@@ -52,7 +45,6 @@ export default function LoginScreen() {
   };
 
   return (
-    // KeyboardAvoidingView ajuda a tela a se ajustar quando o teclado abre
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}

@@ -5,6 +5,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable } from 'react-native';
+import { useAuthStore } from '../../store/authStore';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -16,6 +17,14 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = async () => {
+    await logout();
+    // Navegação para login será feita pelo useEffect no _layout raiz
+    // router.replace('/(auth)/login'); // Não é mais necessário aqui
+    console.log('Logout action called');
+  };
 
   return (
     <Tabs
@@ -29,18 +38,18 @@ export default function TabLayout() {
         name='index'
         options={{
           title: 'APs pendentes',
-
           tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
           headerRight: () => (
-            <Pressable onPress={() => router.push('/(auth)/login')}>
-              {({ pressed }) => (
-                <FontAwesome
-                  name='sign-in'
-                  size={25}
-                  color={Colors.text}
-                  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                />
-              )}
+            <Pressable
+              onPress={handleLogout}
+              style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
+            >
+              <FontAwesome
+                name='sign-out' // Ícone de logout
+                size={25}
+                color={Colors.text}
+                style={{ marginRight: 15 }}
+              />
             </Pressable>
           ),
         }}
