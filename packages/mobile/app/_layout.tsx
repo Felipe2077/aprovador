@@ -27,32 +27,36 @@ export default function RootLayout() {
 
   useEffect(() => {
     console.log(
-      'Auth State Changed: isLoadingAuth:',
+      'Auth Effect Triggered. isLoading:',
       isLoadingAuth,
-      'isAuthenticated:',
-      isAuthenticated
+      'isAuth:',
+      isAuthenticated,
+      'Segments:',
+      segments
     );
 
     if (isLoadingAuth) {
-      console.log('Auth loading, skipping navigation.');
+      console.log('Auth Effect: Still loading auth status.');
 
       return;
     }
 
-    const inAuthGroup = segments[0] === '(auth)'; // Verifica se a rota atual está no grupo (auth)
+    const inAuthGroup = segments[0] === '(auth)';
 
-    if (isAuthenticated && !inAuthGroup) {
-      console.log('Authenticated, redirecting to /');
-      router.replace('/'); // Vai para a tela inicial do grupo (tabs)
-    } else if (!isAuthenticated && !inAuthGroup) {
-      console.log('Not authenticated, redirecting to /login');
-      router.replace('/(auth)/login'); // Vai para a tela de login
-    } else if (isAuthenticated && inAuthGroup) {
-      console.log('Authenticated but in auth group, redirecting to /');
+    if (isAuthenticated && inAuthGroup) {
+      console.log(
+        'Auth Effect: Authenticated user in auth group, redirecting to /'
+      );
       router.replace('/');
+    } else if (!isAuthenticated && !inAuthGroup) {
+      console.log(
+        'Auth Effect: Not authenticated and outside auth group, redirecting to login.'
+      );
+      router.replace('/(auth)/login');
+    } else {
+      console.log('Auth Effect: No automatic redirect needed.');
     }
-    // Se !isAuthenticated e inAuthGroup, já está onde deveria (tela de login), não faz nada
-  }, [isAuthenticated, isLoadingAuth, segments, router]);
+  }, [isAuthenticated, isLoadingAuth, segments, router]); // Dependências importantes!
 
   if (isLoadingAuth) {
     // return <SplashScreenComponent />; // Ou simplesmente null
