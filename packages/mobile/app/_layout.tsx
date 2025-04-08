@@ -1,10 +1,10 @@
 import { DarkTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack, useRouter, useSegments } from 'expo-router'; // Importe useRouter, useSegments
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
 import React, { useEffect } from 'react';
 import Colors from '../constants/Colors';
-import { useAuthStore } from '../store/authStore'; // Importe a store de auth
+import { useAuthStore } from '../store/authStore';
 
 const AppDarkTheme = {
   ...DarkTheme,
@@ -43,6 +43,7 @@ export default function RootLayout() {
 
     const inAuthGroup = segments[0] === '(auth)';
 
+    // Lógica de redirecionamento:
     if (isAuthenticated && inAuthGroup) {
       console.log(
         'Auth Effect: Authenticated user in auth group, redirecting to /'
