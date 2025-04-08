@@ -10,61 +10,71 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+
+import * as SecureStore from 'expo-secure-store';
 import Colors from '../../constants/Colors';
+import { authService } from '../../services/authService';
 import styles from '../../styles/screens/AuthLogin.styles';
+
+const TOKEN_KEY = 'accessToken';
 
 export default function LoginScreen() {
   const router = useRouter();
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Placeholder da função de login (implementaremos a chamada API depois)
   const handleLogin = async () => {
     setIsLoading(true);
     setError(null);
     console.log('Tentando login com:', { username, password });
 
-    // --- Simulação / Lógica da API virá aqui ---
-    // Exemplo: await authService.login(username, password);
-    // Se sucesso: Salvar token e navegar
-    // Se erro: setError('Mensagem de erro');
-    // --- Fim da Simulação ---
+    try {
+      // Chama a função de login do nosso serviço
+      const response = await authService.login(username, password);
 
-    // Simplesmente loga por enquanto
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula espera
+      // Se a chamada foi bem-sucedida (não lançou erro)
+      console.log('Login bem-sucedido, token:', response.accessToken);
 
-    // Exemplo de navegação (faremos após salvar token)
-    // router.replace('/(tabs)/');
+      // Salva o token de forma segura
+      await SecureStore.setItemAsync(TOKEN_KEY, response.accessToken);
+      console.log('Token salvo no SecureStore');
 
-    // Exemplo de erro (descomente para testar)
-    // setError('Credenciais inválidas (teste)');
+      // TODO: Atualizar estado global de autenticação (ex: Zustand) aqui, se necessário.
 
-    setIsLoading(false);
+      // Navega para a tela principal (substitui a tela de login no histórico)
+      router.replace('/(tabs)/'); // Navega para a raiz do grupo (tabs)
+    } catch (err: any) {
+      // Captura o erro lançado pelo authService
+      console.error('Falha no login:', err);
+      // Define a mensagem de erro para exibir na tela
+      setError(err.message || 'Ocorreu um erro inesperado.');
+    } finally {
+      // Garante que o loading seja desativado, mesmo se der erro
+      setIsLoading(false);
+    }
   };
 
   return (
     // KeyboardAvoidingView ajuda a tela a se ajustar quando o teclado abre
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }} // Ocupa toda a tela
+      style={{ flex: 1 }}
     >
       <View style={styles.container}>
         <Text style={styles.title}>Acesse sua conta</Text>
 
-        {/* Mostra mensagem de erro se existir */}
         {error && <Text style={styles.errorText}>{error}</Text>}
 
         <TextInput
           style={styles.input}
           placeholder='Usuário'
-          placeholderTextColor={Colors.textMuted} // Cor do placeholder
+          placeholderTextColor={Colors.textMuted}
           value={username}
           onChangeText={setUsername}
-          autoCapitalize='none' // Não colocar primeira letra maiúscula
-          editable={!isLoading} // Desabilita enquanto carrega
+          autoCapitalize='none'
+          editable={!isLoading}
         />
 
         <TextInput
@@ -73,18 +83,16 @@ export default function LoginScreen() {
           placeholderTextColor={Colors.textMuted}
           value={password}
           onChangeText={setPassword}
-          secureTextEntry // Esconde a senha
+          secureTextEntry
           editable={!isLoading}
         />
 
         <View style={styles.buttonContainer}>
-          {/* Usando TouchableOpacity para botão customizado */}
           <TouchableOpacity
-            style={[styles.button, isLoading && { opacity: 0.7 }]} // Reduz opacidade no loading
+            style={[styles.button, isLoading && { opacity: 0.7 }]}
             onPress={handleLogin}
-            disabled={isLoading} // Desabilita botão no loading
+            disabled={isLoading}
           >
-            {/* Mostra ActivityIndicator ou Texto */}
             {isLoading ? (
               <ActivityIndicator size='small' color={Colors.background} />
             ) : (
@@ -92,9 +100,6 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
         </View>
-
-        {/* Indicador de loading opcional fora do botão */}
-        {/* {isLoading && <ActivityIndicator style={styles.loadingIndicator} size="large" color={Colors.primary} />} */}
       </View>
     </KeyboardAvoidingView>
   );

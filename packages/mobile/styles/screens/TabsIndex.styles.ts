@@ -18,10 +18,12 @@ export default StyleSheet.create({
   emptyText: {
     fontSize: 18,
     textAlign: 'center',
+    color: Colors.text,
   },
   pullDownText: {
     fontSize: 14,
     marginTop: 10,
+    color: Colors.textMuted,
   },
   sectionHeader: {
     marginHorizontal: 8,

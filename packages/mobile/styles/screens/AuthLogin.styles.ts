@@ -1,11 +1,11 @@
 // packages/mobile/styles/screens/AuthLogin.styles.ts
 import { StyleSheet } from 'react-native';
-import Colors from '../../constants/Colors'; // Ajuste o caminho se necessário
+import Colors from '../../constants/Colors';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background, // Usa cor de fundo do tema
+    backgroundColor: Colors.background,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
@@ -25,7 +25,7 @@ export default StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     color: Colors.text,
-    borderColor: Colors.border, // Cor da borda
+    borderColor: Colors.border,
     borderWidth: 1,
     borderStyle: 'solid',
   },
@@ -34,18 +34,18 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: Colors.primary, // Cor primária para o botão
+    backgroundColor: Colors.primary,
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
   },
   buttonText: {
-    color: Colors.background, // Texto do botão contrastante
+    color: Colors.background,
     fontSize: 16,
     fontWeight: 'bold',
   },
   errorText: {
-    color: Colors.error, // Cor de erro
+    color: Colors.error,
     marginTop: 10,
     marginBottom: 10,
     textAlign: 'center',

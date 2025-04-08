@@ -3,6 +3,7 @@ import { Payment } from '@/constants/Payment';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   RefreshControl,
+  ScrollView,
   SectionList,
   Text,
   TouchableOpacity,
@@ -49,6 +50,7 @@ export default function PendingPaymentsScreen() {
     }, 1500);
   }, [resetPayments]);
 
+  //TODO mover para um compenente separado
   const renderSectionHeader = ({ section }: { section: PaymentSection }) => (
     <TouchableOpacity
       onPress={() => toggleSection(section.requesterName)}
@@ -65,6 +67,7 @@ export default function PendingPaymentsScreen() {
       </Text>
     </TouchableOpacity>
   );
+
   const renderPaymentItem = ({ item }: { item: Payment }) => (
     <PaymentListItem payment={item} />
   );
@@ -72,13 +75,13 @@ export default function PendingPaymentsScreen() {
   return (
     <View style={styles.container}>
       {sectionsData.length === 0 && !isRefreshing ? (
-        <View style={styles.emptyContainer}>
+        <ScrollView contentContainerStyle={styles.emptyContainer}>
           <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
           <Text style={styles.emptyText}>Nenhum pagamento pendente!</Text>
           <Text style={styles.pullDownText}>
             (Puxe para baixo para atualizar)
           </Text>
-        </View>
+        </ScrollView>
       ) : (
         <SectionList
           sections={sectionsToRender}

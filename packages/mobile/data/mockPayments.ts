@@ -1,4 +1,3 @@
-// data/mockPayments.ts
 import { Payment } from '../constants/Payment';
 export const MOCK_PAYMENTS: Payment[] = [
   {
@@ -10,6 +9,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     dueDate: '2025-04-10',
     status: 'pending',
     description: 'Material de escritório',
+    departament: 'Financeiro',
   },
   {
     id: '102',
@@ -19,6 +19,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     requester: 'Bob',
     dueDate: '2025-04-15',
     status: 'pending',
+    departament: 'Marketing',
   },
   {
     id: '103',
@@ -29,6 +30,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     dueDate: '2025-04-08',
     status: 'pending',
     description: 'Assinatura mensal',
+    departament: 'Recursos Humanos',
   },
   {
     id: '104',
@@ -38,8 +40,8 @@ export const MOCK_PAYMENTS: Payment[] = [
     requester: 'Carlos',
     dueDate: '2025-04-05',
     status: 'pending',
+    departament: 'Financeiro',
   },
-
   {
     id: '105',
     amount: 200.0,
@@ -49,5 +51,6 @@ export const MOCK_PAYMENTS: Payment[] = [
     dueDate: '2025-04-01',
     status: 'cancelled',
     description: 'Viagem cancelada',
+    departament: 'Compras',
   },
 ];
