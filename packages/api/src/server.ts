@@ -22,7 +22,7 @@ async function main() {
   await server.register(authPlugin);
 
   // Plugin de Documentação Swagger
-  await server.register(swaggerPlugin); // <--- Registra
+  await server.register(swaggerPlugin);
 
   // Rotas da Aplicação
   await server.register(healthRoutes);

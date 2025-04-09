@@ -37,6 +37,10 @@ export default StyleSheet.create({
     borderRadius: 24,
     marginTop: 10, // Espaço antes de uma nova seção
   },
+  sectionHeaderIcon: {
+    // Estilo para o ícone do usuário
+    marginRight: 10, // Espaço entre o ícone e o texto
+  },
   requesterPhotoPlaceholder: {
     width: 36,
     height: 36,

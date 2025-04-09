@@ -75,7 +75,7 @@ importers:
         specifier: ^7.27.0
         version: 7.27.0
       '@expo/vector-icons':
-        specifier: ^14.0.2
+        specifier: ^14.0.4
         version: 14.0.4
       '@react-navigation/native':
         specifier: ^7.0.14

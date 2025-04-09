@@ -23,6 +23,7 @@ export default StyleSheet.create({
 
     elevation: 8,
   },
+
   textContainer: {
     flex: 1,
     marginRight: 10,
