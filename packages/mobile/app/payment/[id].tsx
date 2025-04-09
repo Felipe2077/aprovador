@@ -12,7 +12,6 @@ import {
   ScrollView,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { getTextColorForVariant } from '../../components/AppButton/AppButton.styles'; //
@@ -127,157 +126,191 @@ export default function PaymentDetailScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.container}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, backgroundColor: Colors.background }}
     >
-      <Stack.Screen options={{ title: `Pagamento ${paymentDetails.id}` }} />
-      <Text style={styles.title}>Detalhes do Pagamento</Text>
+      {/* ScrollView para o conteúdo principal */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps='handled' // Ajuda a fechar teclado ao tocar fora no Android
+      >
+        {/* Configura título dinâmico do header */}
+        <Stack.Screen
+          options={{
+            title: `Pagamento ${paymentDetails.id}`,
+            headerTintColor: Colors.text,
+            headerBackTitle: '',
+          }}
+        />
 
-      <View style={styles.detailItem}>
-        <Text style={styles.label}>Recebedor:</Text>
-        <Text style={styles.value}>{paymentDetails.payee}</Text>
-      </View>
-      <View style={styles.detailItem}>
-        <Text style={styles.label}>Valor:</Text>
-        <Text style={[styles.value, styles.amountValue]}>
-          {formatCurrency(paymentDetails.amount, paymentDetails.currency)}
-        </Text>
-      </View>
+        {/* Título da Página */}
+        <Text style={styles.title}>Detalhes do Pagamento</Text>
 
-      <View style={styles.detailItem}>
-        <Text style={styles.label}>Solicitante:</Text>
-        <Text style={styles.value}>{paymentDetails.requester}</Text>
-      </View>
-      <View style={styles.detailItem}>
-        <Text style={styles.label}>Vencimento:</Text>
-        <Text style={styles.value}>{paymentDetails.dueDate}</Text>
-      </View>
-      {paymentDetails.description && (
+        {/* Seção de Detalhes */}
         <View style={styles.detailItem}>
-          <Text style={styles.label}>Descrição:</Text>
-          <Text style={styles.value}>{paymentDetails.description}</Text>
-        </View>
-      )}
-      <View style={styles.detailItem}>
-        <Text style={styles.label}>Status Atual:</Text>
-        <Text style={styles.value}>{paymentDetails.status}</Text>
-      </View>
-
-      {paymentDetails.status === 'pending' && (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1, backgroundColor: Colors.background }} // Cor de fundo geral
-        >
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.container}
-          >
-            <Stack.Screen
-              options={{
-                title: `Pagamento ${paymentDetails.id}`,
-                headerTintColor: Colors.text,
-              }}
+          <View style={styles.labelContainer}>
+            <Ionicons
+              name='person-outline'
+              size={18}
+              color={Colors.textSecondary}
+              style={styles.labelIcon}
             />
-            <Text style={styles.title}>Detalhes do Pagamento</Text>
-            {paymentDetails.status === 'pending' && (
-              <View style={styles.buttonContainer}>
-                <AppButton
-                  title='Cancelar'
-                  onPress={handleCancel}
-                  variant='danger' // Usa a variante 'danger' (vermelha)
-                  iconLeft={
-                    <Ionicons
-                      name='close-circle-outline'
-                      size={20}
-                      // Pega a cor do texto da variante 'danger' nos estilos
-                      color={getTextColorForVariant('danger')}
-                    />
-                  }
-                  disabled={loading}
-                />
-                <AppButton
-                  title='Rejeitar'
-                  onPress={handleReject} // Abre o modal
-                  variant='warning' // Usa a variante 'warning' (laranja)
-                  iconLeft={
-                    // Escolha UM ícone e descomente:
-                    <Ionicons
-                      name='arrow-undo-outline'
-                      size={20}
-                      // Pega a cor do texto da variante 'warning'
-                      color={getTextColorForVariant('warning')}
-                    />
-                    // <Ionicons name="warning-outline" size={20} color={styles.textWarning.color} />
-                    // <Ionicons name="thumbs-down-outline" size={20} color={styles.textWarning.color} />
-                  }
-                  disabled={loading}
-                />
-                <AppButton
-                  title='Aprovar'
-                  onPress={handleApprove}
-                  variant='success' // Usa a variante 'success' (verde)
-                  iconLeft={
-                    <Ionicons
-                      name='thumbs-up-outline'
-                      size={20}
-                      // Pega a cor do texto da variante 'success'
-                      color={getTextColorForVariant('success')}
-                    />
-                  }
-                  disabled={loading}
-                />
-              </View>
-            )}
-          </ScrollView>
-
-          {/* --- Modal de Rejeição --- */}
-          <Modal
-            animationType='fade' // ou "slide"
-            transparent={true} // Para permitir fundo semi-transparente e centralizar
-            visible={isRejectModalVisible}
-            onRequestClose={() => {
-              // Chamado ao pressionar o botão 'voltar' no Android
-              setIsRejectModalVisible(false);
-            }}
-          >
-            {/* View para centralizar e escurecer o fundo */}
-            <View style={styles.modalCenteredView}>
-              {/* View do conteúdo do modal */}
-              <View style={styles.modalView}>
-                <Text style={styles.modalTitle}>Motivo da Rejeição</Text>
-                <TextInput
-                  style={styles.modalTextInput}
-                  placeholder='Digite o motivo aqui...'
-                  placeholderTextColor={Colors.textMuted}
-                  value={rejectionReason}
-                  onChangeText={setRejectionReason}
-                  multiline={true} // Permite múltiplas linhas
-                  numberOfLines={4} // Sugestão de altura inicial
-                />
-                {/* Botões do Modal */}
-                <View style={styles.modalButtonContainer}>
-                  <TouchableOpacity
-                    style={[styles.modalButton, styles.modalButtonCancel]}
-                    onPress={() => setIsRejectModalVisible(false)} // Botão Cancelar apenas fecha
-                  >
-                    <Text style={styles.modalButtonTextCancel}>Cancelar</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.modalButton, styles.modalButtonConfirm]}
-                    onPress={handleConfirmRejection} // Botão Confirmar chama a nova função
-                  >
-                    <Text style={styles.modalButtonTextConfirm}>
-                      Confirmar Rejeição
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <Text style={styles.label}>Recebedor:</Text>
+          </View>
+          <Text style={styles.value}>{paymentDetails.payee}</Text>
+        </View>
+        <View style={styles.detailItem}>
+          <View style={styles.labelContainer}>
+            <Ionicons
+              name='cash-outline'
+              size={18}
+              color={Colors.textSecondary}
+              style={styles.labelIcon}
+            />
+            <Text style={styles.label}>Valor:</Text>
+          </View>
+          <Text style={[styles.value, styles.amountValue]}>
+            {formatCurrency(paymentDetails.amount, paymentDetails.currency)}
+          </Text>
+        </View>
+        <View style={styles.detailItem}>
+          <View style={styles.labelContainer}>
+            <Ionicons
+              name='person-circle-outline'
+              size={18}
+              color={Colors.textSecondary}
+              style={styles.labelIcon}
+            />
+            <Text style={styles.label}>Solicitante:</Text>
+          </View>
+          <Text style={styles.value}>{paymentDetails.requester}</Text>
+        </View>
+        <View style={styles.detailItem}>
+          <View style={styles.labelContainer}>
+            <Ionicons
+              name='calendar-outline'
+              size={18}
+              color={Colors.textSecondary}
+              style={styles.labelIcon}
+            />
+            <Text style={styles.label}>Vencimento:</Text>
+          </View>
+          <Text style={styles.value}>{paymentDetails.dueDate || 'N/A'}</Text>
+        </View>
+        {paymentDetails.description && (
+          <View style={styles.detailItem}>
+            <View style={styles.labelContainer}>
+              <Ionicons
+                name='document-text-outline'
+                size={18}
+                color={Colors.textSecondary}
+                style={styles.labelIcon}
+              />
+              <Text style={styles.label}>Descrição:</Text>
             </View>
-          </Modal>
-          {/* --- Fim do Modal --- */}
+            <Text style={styles.value}>{paymentDetails.description}</Text>
+          </View>
+        )}
+        <View style={styles.detailItem}>
+          <View style={styles.labelContainer}>
+            <Ionicons
+              name='information-circle-outline'
+              size={18}
+              color={Colors.textSecondary}
+              style={styles.labelIcon}
+            />
+            <Text style={styles.label}>Status Atual:</Text>
+          </View>
+          <Text style={styles.value}>{paymentDetails.status}</Text>
+        </View>
+
+        {/* Botões de Ação (Apenas se pendente) */}
+        {paymentDetails.status === 'pending' && (
+          <View style={styles.buttonContainer}>
+            <AppButton
+              title='Cancelar'
+              onPress={handleCancel}
+              variant='danger'
+              iconLeft={
+                <Ionicons
+                  name='close-circle-outline'
+                  size={20}
+                  color={getTextColorForVariant('danger')}
+                />
+              }
+              disabled={loading} // Usa o estado de loading da TELA aqui
+            />
+            <AppButton
+              title='Rejeitar'
+              onPress={handleReject} // Abre o modal
+              variant='warning'
+              iconLeft={
+                <Ionicons
+                  name='arrow-undo-outline'
+                  size={20}
+                  color={getTextColorForVariant('warning')}
+                />
+              }
+              disabled={loading}
+            />
+            <AppButton
+              title='Aprovar'
+              onPress={handleApprove}
+              variant='success'
+              iconLeft={
+                <Ionicons
+                  name='thumbs-up-outline'
+                  size={20}
+                  color={getTextColorForVariant('success')}
+                />
+              }
+              disabled={loading}
+            />
+          </View>
+        )}
+      </ScrollView>
+
+      {/* Modal de Rejeição */}
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={isRejectModalVisible}
+        onRequestClose={() => setIsRejectModalVisible(false)}
+      >
+        <KeyboardAvoidingView // Adiciona KAV aqui também para o input no modal
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalCenteredView} // Usa o estilo que centraliza e escurece
+        >
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Motivo da Rejeição</Text>
+            <TextInput
+              style={styles.modalTextInput}
+              placeholder='Digite o motivo aqui...'
+              placeholderTextColor={Colors.textMuted}
+              value={rejectionReason}
+              onChangeText={setRejectionReason}
+              multiline={true}
+              numberOfLines={4}
+            />
+            <View style={styles.modalButtonContainer}>
+              <AppButton
+                title='Cancelar'
+                onPress={() => setIsRejectModalVisible(false)}
+                variant='muted' // Ou 'default'
+                style={{ flex: 1, marginRight: 5 }} // Estilo para ajustar largura
+              />
+              <AppButton
+                title='Confirmar'
+                onPress={handleConfirmRejection}
+                variant='danger' // Ou 'warning'? Mantendo danger por ora
+                style={{ flex: 1, marginLeft: 5 }}
+              />
+            </View>
+          </View>
         </KeyboardAvoidingView>
-      )}
-    </ScrollView>
+      </Modal>
+    </KeyboardAvoidingView>
   );
 }

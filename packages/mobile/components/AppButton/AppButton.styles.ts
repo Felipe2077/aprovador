@@ -6,9 +6,9 @@ import Colors from '../../constants/Colors'; // Ajuste o caminho
 // Ajuste aqui se necessário com base nas suas cores exatas!
 const variantTextColors = {
   primary: Colors.background,
-  success: '#FFFFFF',
-  danger: '#FFFFFF',
-  warning: Colors.background,
+  success: Colors.successText,
+  danger: Colors.dangerText,
+  warning: Colors.warningText,
   muted: Colors.text,
   default: Colors.text,
 };
@@ -18,16 +18,13 @@ export default StyleSheet.create({
   // Estilo base do container do botão
   container: {
     flexDirection: 'row',
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16, // Ajustado para dar mais espaço com ícone
-    borderRadius: 8,
-    minWidth: 100,
-    marginHorizontal: 5, // Espaçamento padrão entre botões adjacentes
-    overflow: 'hidden', // Garante que o ripple/feedback fique dentro das bordas
   },
-  // Estilo base do texto
   text: {
     fontSize: 15, // Um pouco menor para caber com ícone
     fontWeight: 'bold',

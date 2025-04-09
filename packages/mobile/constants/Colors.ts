@@ -22,9 +22,12 @@ export default {
   accent: '#03DAC5', // Uma cor de acento secundária (ciano exemplo)
 
   // Cores de Status/Feedback
-  success: '#4CAF50', // Verde para sucesso
-  warning: '#FFC107', // Amarelo para aviso
-  error: '#F44336', // Vermelho para erro
+  success: '#213128',
+  warning: '#3B2A1B',
+  error: '#3B2424',
+  successText: '#5FAF7F',
+  dangerText: '#FF6B6B',
+  warningText: '#D77D28',
 
   // Outras Cores
   border: '#27272A', // Bordas sutis
