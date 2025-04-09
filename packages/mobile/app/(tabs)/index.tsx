@@ -1,5 +1,6 @@
 // app/(tabs)/index.tsx
 import { Payment } from '@/constants/Payment';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   RefreshControl,
@@ -51,22 +52,33 @@ export default function PendingPaymentsScreen() {
   }, [resetPayments]);
 
   //TODO mover para um compenente separado
-  const renderSectionHeader = ({ section }: { section: PaymentSection }) => (
-    <TouchableOpacity
-      onPress={() => toggleSection(section.requesterName)}
-      style={styles.sectionHeader}
-    >
-      <View style={styles.requesterPhotoPlaceholder}>
-        <Text style={styles.requesterInitial}>
-          {section.requesterName.charAt(0)}
-        </Text>
-      </View>
-      <Text style={styles.sectionHeaderText}>{section.requesterName}</Text>
-      <Text style={styles.sectionToggleIndicator}>
-        {expandedSections[section.requesterName] ? '➖' : '➕'}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderSectionHeader = ({ section }: { section: PaymentSection }) => {
+    const isExpanded = !!expandedSections[section.requesterName]; // Garante que seja boolean
+    return (
+      <TouchableOpacity
+        onPress={() => toggleSection(section.requesterName)}
+        style={styles.sectionHeader}
+      >
+        {/* Ícone do Usuário */}
+        <FontAwesome
+          name='user-circle-o' // Ou "user-circle" para preenchido
+          size={24} // Ajuste o tamanho conforme necessário
+          color={Colors.textSecondary} // Use uma cor do tema
+          style={styles.sectionHeaderIcon} // Estilo para margem, etc.
+        />
+
+        {/* Nome do Solicitante */}
+        <Text style={styles.sectionHeaderText}>{section.requesterName}</Text>
+
+        {/* Ícone Chevron para Expandir/Recolher */}
+        <Ionicons
+          name={isExpanded ? 'chevron-down' : 'chevron-forward'} // Muda a seta
+          size={22} // Ajuste o tamanho
+          color={Colors.textSecondary} // Use uma cor do tema
+        />
+      </TouchableOpacity>
+    );
+  };
 
   const renderPaymentItem = ({ item }: { item: Payment }) => (
     <PaymentListItem payment={item} />
