@@ -61,4 +61,73 @@ export default StyleSheet.create({
     textAlign: 'center',
     marginBottom: 15,
   },
+  modalCenteredView: {
+    flex: 1, // Ocupa toda a tela
+    justifyContent: 'center', // Centraliza verticalmente
+    alignItems: 'center', // Centraliza horizontalmente
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Fundo semi-transparente
+  },
+  modalView: {
+    width: '85%', // Largura do modal
+    margin: 20,
+    backgroundColor: Colors.card, // Fundo do modal (cor de card do tema)
+    borderRadius: 12,
+    padding: 25,
+    alignItems: 'center',
+    shadowColor: '#000', // Sombra (pode não aparecer bem no tema escuro)
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    marginBottom: 20,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  modalTextInput: {
+    width: '100%',
+    minHeight: 100, // Altura mínima para multiline
+    maxHeight: 150, // Altura máxima
+    backgroundColor: Colors.inputBackground, // Fundo do input
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+    textAlignVertical: 'top', // Alinha texto no topo para multiline
+    fontSize: 16,
+    color: Colors.text,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Ou 'flex-end' para botões à direita
+    width: '100%',
+    marginTop: 10,
+  },
+  modalButton: {
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    elevation: 2, // Sombra Android
+    minWidth: 100, // Largura mínima
+    alignItems: 'center',
+  },
+  modalButtonCancel: {
+    backgroundColor: Colors.textMuted, // Cor cinza/neutra para cancelar
+    marginRight: 10, // Espaço entre botões
+  },
+  modalButtonConfirm: {
+    backgroundColor: Colors.error, // Cor de erro para confirmar rejeição
+  },
+  modalButtonTextCancel: {
+    color: Colors.background, // Texto contrastante
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalButtonTextConfirm: {
+    color: Colors.text, // Texto contrastante
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });

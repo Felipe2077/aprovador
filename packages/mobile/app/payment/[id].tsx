@@ -4,8 +4,13 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
   ScrollView,
   Text,
+  TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import Colors from '../../constants/Colors';
@@ -31,6 +36,9 @@ export default function PaymentDetailScreen() {
   const approvePayment = usePaymentStore((state) => state.approvePayment);
   const rejectPayment = usePaymentStore((state) => state.rejectPayment);
   const cancelPayment = usePaymentStore((state) => state.cancelPayment);
+
+  const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   useEffect(() => {
     setLoading(true);
@@ -59,12 +67,29 @@ export default function PaymentDetailScreen() {
 
   const handleReject = () => {
     if (!paymentDetails) return;
-    rejectPayment(paymentDetails.id);
+    console.log('Reject button pressed, opening modal...');
+    setRejectionReason(''); // Limpa o motivo anterior
+    setIsRejectModalVisible(true); // Abre o modal
+    // Não chama rejectPayment(id) nem router.back() aqui!
+  };
+
+  const handleConfirmRejection = () => {
+    if (!paymentDetails) return;
+
+    // Apenas para demonstração: loga o motivo, fecha modal, alerta e navega
+    console.log(
+      `Rejeitando pagamento ${paymentDetails.id} com motivo: ${rejectionReason}`
+    );
+
+    // TODO - Na Fase 3: Chamar a ação da store passando o motivo
+    // rejectPayment(paymentDetails.id, rejectionReason);
+
+    setIsRejectModalVisible(false); // Fecha o modal
     Alert.alert(
       'Rejeitado',
-      `Pagamento para ${paymentDetails.payee} rejeitado.`
-    );
-    router.back();
+      `Pagamento para ${paymentDetails.payee} rejeitado (motivo simulado).`
+    ); // Feedback
+    router.back(); // Volta para a lista
   };
 
   const handleCancel = () => {
@@ -137,23 +162,92 @@ export default function PaymentDetailScreen() {
       </View>
 
       {paymentDetails.status === 'pending' && (
-        <View style={styles.buttonContainer}>
-          <Button
-            title='Cancelar'
-            onPress={handleCancel}
-            color={Colors.textMuted}
-          />
-          <Button
-            title='Rejeitar'
-            onPress={handleReject}
-            color={Colors.error}
-          />
-          <Button
-            title='Aprovar'
-            onPress={handleApprove}
-            color={Colors.success}
-          />
-        </View>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1, backgroundColor: Colors.background }} // Cor de fundo geral
+        >
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.container}
+          >
+            <Stack.Screen
+              options={{
+                title: `Pagamento ${paymentDetails.id}`,
+                headerTintColor: Colors.text,
+              }}
+            />
+            <Text style={styles.title}>Detalhes do Pagamento</Text>
+
+            {/* ... (Renderização dos detalhes: payee, amount, etc.) ... */}
+
+            {/* Botões de Ação (o 'Rejeitar' agora abre o modal) */}
+            {paymentDetails.status === 'pending' && (
+              <View style={styles.buttonContainer}>
+                <Button
+                  title='Cancelar'
+                  onPress={handleCancel}
+                  color={Colors.textMuted}
+                />
+                <Button
+                  title='Rejeitar'
+                  onPress={handleReject}
+                  color={Colors.error}
+                />
+                <Button
+                  title='Aprovar'
+                  onPress={handleApprove}
+                  color={Colors.success}
+                />
+              </View>
+            )}
+          </ScrollView>
+
+          {/* --- Modal de Rejeição --- */}
+          <Modal
+            animationType='fade' // ou "slide"
+            transparent={true} // Para permitir fundo semi-transparente e centralizar
+            visible={isRejectModalVisible}
+            onRequestClose={() => {
+              // Chamado ao pressionar o botão 'voltar' no Android
+              setIsRejectModalVisible(false);
+            }}
+          >
+            {/* View para centralizar e escurecer o fundo */}
+            <View style={styles.modalCenteredView}>
+              {/* View do conteúdo do modal */}
+              <View style={styles.modalView}>
+                <Text style={styles.modalTitle}>Motivo da Rejeição</Text>
+                <TextInput
+                  style={styles.modalTextInput}
+                  placeholder='Digite o motivo aqui...'
+                  placeholderTextColor={Colors.textMuted}
+                  value={rejectionReason}
+                  onChangeText={setRejectionReason}
+                  multiline={true} // Permite múltiplas linhas
+                  numberOfLines={4} // Sugestão de altura inicial
+                />
+                {/* Botões do Modal */}
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity
+                    style={[styles.modalButton, styles.modalButtonCancel]}
+                    onPress={() => setIsRejectModalVisible(false)} // Botão Cancelar apenas fecha
+                  >
+                    <Text style={styles.modalButtonTextCancel}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.modalButton, styles.modalButtonConfirm]}
+                    onPress={handleConfirmRejection} // Botão Confirmar chama a nova função
+                  >
+                    <Text style={styles.modalButtonTextConfirm}>
+                      Confirmar Rejeição
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+          {/* --- Fim do Modal --- */}
+        </KeyboardAvoidingView>
       )}
     </ScrollView>
   );

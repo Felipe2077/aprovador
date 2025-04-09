@@ -72,7 +72,7 @@ export default function RootLayout() {
       <StatusBar style='light' />
       <Stack
         screenOptions={{
-          title: 'Pagamento',
+          headerBackButtonDisplayMode: 'minimal',
         }}
       >
         <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
