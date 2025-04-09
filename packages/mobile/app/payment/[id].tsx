@@ -1,3 +1,5 @@
+import AppButton from '@/components/AppButton';
+import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -13,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { getTextColorForVariant } from '../../components/AppButton/AppButton.styles'; //
 import Colors from '../../constants/Colors';
 import { formatCurrency } from '../../constants/formatCurrency';
 import { Payment } from '../../constants/Payment';
@@ -177,26 +180,52 @@ export default function PaymentDetailScreen() {
               }}
             />
             <Text style={styles.title}>Detalhes do Pagamento</Text>
-
-            {/* ... (Renderização dos detalhes: payee, amount, etc.) ... */}
-
-            {/* Botões de Ação (o 'Rejeitar' agora abre o modal) */}
             {paymentDetails.status === 'pending' && (
               <View style={styles.buttonContainer}>
-                <Button
+                <AppButton
                   title='Cancelar'
                   onPress={handleCancel}
-                  color={Colors.textMuted}
+                  variant='danger' // Usa a variante 'danger' (vermelha)
+                  iconLeft={
+                    <Ionicons
+                      name='close-circle-outline'
+                      size={20}
+                      // Pega a cor do texto da variante 'danger' nos estilos
+                      color={getTextColorForVariant('danger')}
+                    />
+                  }
+                  disabled={loading}
                 />
-                <Button
+                <AppButton
                   title='Rejeitar'
-                  onPress={handleReject}
-                  color={Colors.error}
+                  onPress={handleReject} // Abre o modal
+                  variant='warning' // Usa a variante 'warning' (laranja)
+                  iconLeft={
+                    // Escolha UM ícone e descomente:
+                    <Ionicons
+                      name='arrow-undo-outline'
+                      size={20}
+                      // Pega a cor do texto da variante 'warning'
+                      color={getTextColorForVariant('warning')}
+                    />
+                    // <Ionicons name="warning-outline" size={20} color={styles.textWarning.color} />
+                    // <Ionicons name="thumbs-down-outline" size={20} color={styles.textWarning.color} />
+                  }
+                  disabled={loading}
                 />
-                <Button
+                <AppButton
                   title='Aprovar'
                   onPress={handleApprove}
-                  color={Colors.success}
+                  variant='success' // Usa a variante 'success' (verde)
+                  iconLeft={
+                    <Ionicons
+                      name='thumbs-up-outline'
+                      size={20}
+                      // Pega a cor do texto da variante 'success'
+                      color={getTextColorForVariant('success')}
+                    />
+                  }
+                  disabled={loading}
                 />
               </View>
             )}
