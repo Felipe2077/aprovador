@@ -281,11 +281,11 @@ export default function PaymentDetailScreen() {
                   color={getTextColorForVariant('danger')}
                 />
               }
-              disabled={loading} // Usa o estado de loading da TELA aqui
+              disabled={loading}
             />
             <AppButton
               title='Rejeitar'
-              onPress={handleReject} // Abre o modal
+              onPress={handleReject}
               variant='warning'
               iconLeft={
                 <Ionicons

@@ -11,6 +11,7 @@ const variantTextColors = {
   warning: Colors.warningText,
   muted: Colors.text,
   default: Colors.text,
+  neutral: Colors.background,
 };
 type VariantTextColorKeys = keyof typeof variantTextColors;
 
@@ -42,6 +43,7 @@ export default StyleSheet.create({
   containerWarning: { backgroundColor: Colors.warning },
   containerMuted: { backgroundColor: Colors.textMuted },
   containerDefault: { backgroundColor: Colors.card },
+  containerNeutral: { backgroundColor: Colors.neutral },
 
   // --- Estilos das Variantes (Cor do Texto/Ícone) ---
   textPrimary: { color: variantTextColors.primary },
@@ -50,6 +52,7 @@ export default StyleSheet.create({
   textWarning: { color: variantTextColors.warning },
   textMuted: { color: variantTextColors.muted },
   textDefault: { color: variantTextColors.default },
+  textNeutral: { color: variantTextColors.neutral },
 
   // --- Estilo para estado Desabilitado/Loading ---
   disabled: {

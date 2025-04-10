@@ -7,6 +7,7 @@ const tintColorDark = '#fff'; // Cor de destaque/tint padrão para modo escuro
 export default {
   // Cores de Texto
   text: '#FFFFFF', // Texto principal
+  textBlack: '#000000', // Texto preto
   textSecondary: '#a1a1a1', // Texto secundário/mais claro
   textMuted: '#777777', // Texto ainda mais sutil
   link: '#62A0FC', // Cor para links (exemplo)
@@ -28,6 +29,7 @@ export default {
   successText: '#5FAF7F',
   dangerText: '#FF6B6B',
   warningText: '#D77D28',
+  neutral: '#FFFFFF', // Texto principal
 
   // Outras Cores
   border: '#27272A', // Bordas sutis

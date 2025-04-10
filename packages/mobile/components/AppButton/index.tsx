@@ -3,13 +3,15 @@ import React from 'react';
 import {
   ActivityIndicator,
   StyleProp,
+  StyleSheet,
   Text,
   TextStyle, // Importe TextStyle
   TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
-import styles, { getTextColorForVariant } from './AppButton.styles'; // Importa também a função helper
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import styles from './AppButton.styles'; // Importa também a função helper
 
 // Tipos aceitos para a variante do botão
 type ButtonVariant =
@@ -18,7 +20,8 @@ type ButtonVariant =
   | 'danger'
   | 'warning'
   | 'muted'
-  | 'default';
+  | 'default'
+  | 'neutral';
 
 // Props que o componente aceita
 interface AppButtonProps {
@@ -55,8 +58,28 @@ export default function AppButton({
         return styles.containerWarning;
       case 'muted':
         return styles.containerMuted;
+      case 'neutral':
+        return styles.containerNeutral;
       default:
         return styles.containerDefault;
+    }
+  };
+  const getVariantTextStyle = (variant: ButtonVariant): TextStyle => {
+    switch (variant) {
+      case 'primary':
+        return styles.textPrimary;
+      case 'success':
+        return styles.textSuccess;
+      case 'danger':
+        return styles.textDanger;
+      case 'warning':
+        return styles.textWarning;
+      case 'muted':
+        return styles.textMuted;
+      case 'neutral':
+        return styles.textNeutral;
+      default:
+        return styles.textDefault;
     }
   };
   // Monta o array de estilos para o container do botão
@@ -72,17 +95,28 @@ export default function AppButton({
   // Monta o array de estilos para o texto do botão
   const textStyle: StyleProp<TextStyle> = [
     styles.text,
-    // Aplica a cor do texto da variante dinamicamente (ex: styles.textSuccess)
-    styles[
-      `text${
-        variant.charAt(0).toUpperCase() + variant.slice(1)
-      }` as keyof typeof styles
-    ],
+    getVariantTextStyle(variant),
   ];
 
   // Pega a cor do texto/ícone para usar no ActivityIndicator
-  const loadingColor = getTextColorForVariant(variant);
-
+  const loadingColor = getVariantTextStyle(variant).color || Colors.text; // Pega a cor do estilo retornado pelo helper
+  if (variant === 'primary') {
+    console.log(
+      `--- DEBUG AppButton (variant="primary", title="${title}") ---`
+    );
+    // Log o objeto de estilo retornado pelo helper:
+    console.log(
+      'Estilo Texto da Variante (do helper):',
+      JSON.stringify(getVariantTextStyle(variant))
+    );
+    // Log o estilo final que será aplicado ao <Text>
+    console.log(
+      'Estilo Final do Texto (flattened):',
+      JSON.stringify(StyleSheet.flatten(textStyle))
+    );
+    console.log('----------------------------------------------------------');
+  }
+  // --- Fim do Console Log ---
   return (
     <TouchableOpacity
       style={containerStyle}
@@ -97,7 +131,7 @@ export default function AppButton({
         // Se não estiver carregando, mostra ícone (se houver) e texto
         <>
           {iconLeft && <View style={styles.iconWrapper}>{iconLeft}</View>}
-          <Text style={textStyle}>{title}</Text>
+          <Text style={StyleSheet.flatten(textStyle)}>{title}</Text>
         </>
       )}
     </TouchableOpacity>

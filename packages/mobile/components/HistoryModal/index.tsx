@@ -1,7 +1,7 @@
 // packages/mobile/components/HistoryModal/index.tsx
 import React from 'react';
 import { FlatList, Modal, Text, View } from 'react-native';
-import AppButton from '../AppButton'; // Usando AppButton para consistência
+import AppButton from '../AppButton';
 import styles from './HistoryModal.styles'; // Estilos locais
 
 // Interface para o item de histórico (igual à definida antes em [id].tsx)
@@ -38,7 +38,7 @@ HistoryModalProps) {
 
   return (
     <Modal
-      animationType='slide' // Ou "fade"
+      animationType='fade'
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose} // Botão voltar Android
@@ -71,7 +71,7 @@ HistoryModalProps) {
             <AppButton
               title='Fechar'
               onPress={onClose}
-              variant='primary' // Ou 'muted', 'default'
+              variant='neutral' // Ou 'muted', 'default'
             />
           </View>
         </View>

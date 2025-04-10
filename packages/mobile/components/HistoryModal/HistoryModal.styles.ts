@@ -60,8 +60,10 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   closeButtonContainer: {
-    width: '60%', // Ou ajuste conforme AppButton
+    width: '100%',
+    height: 50,
     marginTop: 20,
+    color: Colors.text,
   },
   historyListContainer: {
     // Adicionado para a FlatList ocupar espaço
