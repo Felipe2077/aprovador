@@ -7,9 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Button,
-  FlatList,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   ScrollView,
   Text,
@@ -17,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import { getTextColorForVariant } from '../../components/AppButton/AppButton.styles'; //
+import HistoryModal from '../../components/HistoryModal'; // <--- Importe o novo modal
 import Colors from '../../constants/Colors';
 import { formatCurrency } from '../../constants/formatCurrency';
 import { Payment } from '../../constants/Payment';
@@ -57,36 +56,31 @@ export default function PaymentDetailScreen() {
 
   const handleOpenHistoryModal = () => {
     if (!paymentDetails) return;
-
     console.log(`Abrindo histórico para payee: ${paymentDetails.payee}`);
     const allPayments = usePaymentStore.getState().payments;
-
     const history = allPayments
       .filter(
         (p) =>
-          p.payee === paymentDetails.payee && // Mesmo fornecedor
-          p.status === 'approved' && // Apenas aprovados (ou ajuste se quiser outros status)
-          p.id !== paymentDetails.id // Exclui o próprio pagamento atual
+          p.payee === paymentDetails.payee &&
+          p.status === 'approved' &&
+          p.id !== paymentDetails.id
       )
       .sort(
         (a, b) =>
           new Date(b.dueDate || b.createdAt).getTime() -
           new Date(a.dueDate || a.createdAt).getTime()
-      ) // Ordena do mais recente para o mais antigo
+      )
       .map((p) => ({
-        // Formata para exibição
         id: p.id,
-        // Formata data para Mês/Ano (ex: 03/2025)
         displayDate: new Intl.DateTimeFormat('pt-BR', {
           month: '2-digit',
           year: 'numeric',
         }).format(new Date(p.dueDate || p.createdAt)),
         formattedAmount: formatCurrency(p.amount, p.currency),
       }));
-
     console.log('Histórico encontrado:', history);
     setPaymentHistoryData(history);
-    setIsHistoryModalVisible(true); // Abre o modal
+    setIsHistoryModalVisible(true);
   };
 
   useEffect(() => {
@@ -327,49 +321,13 @@ export default function PaymentDetailScreen() {
         onSubmit={handleConfirmRejection} // Função a ser chamada ao confirmar
       />
 
-      {/* --- NOVO Modal de Histórico --- */}
-      <Modal
-        animationType='slide'
-        transparent={true}
-        visible={isHistoryModalVisible}
-        onRequestClose={() => setIsHistoryModalVisible(false)}
-      >
-        <View style={styles.modalCenteredView}>
-          <View style={[styles.modalView, styles.historyModalView]}>
-            {' '}
-            {/* Estilo customizado opcional */}
-            <Text style={styles.modalTitle}>
-              Histórico para: {paymentDetails.payee}
-            </Text>
-            {paymentHistoryData.length > 0 ? (
-              <FlatList
-                data={paymentHistoryData}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <View style={styles.historyListItem}>
-                    <Text style={styles.historyDate}>{item.displayDate}</Text>
-                    <Text style={styles.historyAmount}>
-                      {item.formattedAmount}
-                    </Text>
-                  </View>
-                )}
-                style={{ width: '100%' }} // Garante que FlatList use a largura
-              />
-            ) : (
-              <Text style={styles.historyEmptyText}>
-                Nenhum histórico encontrado.
-              </Text>
-            )}
-            {/* Botão Fechar */}
-            <AppButton
-              title='Fechar'
-              onPress={() => setIsHistoryModalVisible(false)}
-              variant='muted' // Ou 'primary'
-              style={{ marginTop: 20, width: '60%' }} // Estilo para ajustar
-            />
-          </View>
-        </View>
-      </Modal>
+      {/* --- Modal de Histórico --- */}
+      <HistoryModal
+        isVisible={isHistoryModalVisible}
+        payeeName={paymentDetails?.payee || ''} // Passa o nome
+        historyData={paymentHistoryData} // Passa os dados do histórico
+        onClose={() => setIsHistoryModalVisible(false)} // Passa a função para fechar
+      />
     </KeyboardAvoidingView>
   );
 }
