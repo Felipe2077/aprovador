@@ -1,8 +1,9 @@
 // app/(tabs)/index.tsx
 import { Payment } from '@/constants/Payment';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
+  Image,
   RefreshControl,
   ScrollView,
   SectionList,
@@ -53,28 +54,50 @@ export default function PendingPaymentsScreen() {
 
   //TODO mover para um compenente separado
   const renderSectionHeader = ({ section }: { section: PaymentSection }) => {
-    const isExpanded = !!expandedSections[section.requesterName]; // Garante que seja boolean
+    const isExpanded = !!expandedSections[section.requesterName];
+    // Define uma URL de fallback caso a da seção não exista
+    const placeholderImage = require('../../assets/images/adaptive-icon.png'); // Use um asset local SEU!
+    const imageUrl = section.requesterPhotoUrl; // Poderia usar o placeholder aqui se for undefined
+
     return (
+      // O TouchableOpacity ainda envolve tudo para o clique
       <TouchableOpacity
         onPress={() => toggleSection(section.requesterName)}
         style={styles.sectionHeader}
       >
-        {/* Ícone do Usuário */}
-        <FontAwesome
-          name='user-circle-o' // Ou "user-circle" para preenchido
-          size={24} // Ajuste o tamanho conforme necessário
-          color={Colors.textSecondary} // Use uma cor do tema
-          style={styles.sectionHeaderIcon} // Estilo para margem, etc.
+        {/* Foto (com fallback se necessário) */}
+        <Image
+          // source={imageUrl ? { uri: imageUrl } : placeholderImage} // Usa URL ou fallback local
+          source={{ uri: imageUrl }} // Usando só a URL por enquanto
+          style={styles.requesterPhoto}
+          // Adicione um placeholder enquanto carrega (opcional)
+          defaultSource={placeholderImage}
         />
 
-        {/* Nome do Solicitante */}
-        <Text style={styles.sectionHeaderText}>{section.requesterName}</Text>
+        {/* Container para Nome e Departamento */}
+        <View style={styles.requesterInfoContainer}>
+          <Text style={styles.requesterNameText} numberOfLines={1}>
+            {section.requesterName}
+          </Text>
+          {/* Mostra departamento se existir */}
+          {section.requesterDepartment && (
+            <Text style={styles.requesterDeptText} numberOfLines={1}>
+              {section.requesterDepartment}
+            </Text>
+          )}
+        </View>
 
-        {/* Ícone Chevron para Expandir/Recolher */}
+        {/* Badge de Contagem */}
+        <View style={styles.badgeContainer}>
+          <Text style={styles.badgeText}>{section.count}</Text>
+        </View>
+
+        {/* Ícone Chevron */}
         <Ionicons
-          name={isExpanded ? 'chevron-down' : 'chevron-forward'} // Muda a seta
-          size={22} // Ajuste o tamanho
-          color={Colors.textSecondary} // Use uma cor do tema
+          name={isExpanded ? 'chevron-down' : 'chevron-forward'}
+          size={22}
+          color={Colors.textSecondary}
+          style={styles.chevronIcon} // Adicionado estilo para possível margem
         />
       </TouchableOpacity>
     );

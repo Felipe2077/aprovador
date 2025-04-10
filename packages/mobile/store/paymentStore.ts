@@ -5,8 +5,10 @@ import { MOCK_PAYMENTS } from '../data/mockPayments';
 
 export interface PaymentSection {
   requesterName: string;
-  requesterPhotoUrl?: string;
-  data: Payment[];
+  requesterPhotoUrl?: string; // URL da foto (opcional por agora)
+  requesterDepartment?: string; // Departamento (opcional)
+  count: number; // Contagem de pagamentos na seção
+  data: Payment[]; // Pagamentos da seção
 }
 
 interface PaymentState {
@@ -51,29 +53,32 @@ const selectPayments = (state: PaymentState): Payment[] => state.payments;
 const calculateGroupedPendingPayments = (
   payments: Payment[]
 ): PaymentSection[] => {
-  console.log(
-    '>>> RESELECT: Recalculando agrupamento de pagamentos pendentes...'
-  );
-
+  console.log('>>> RESELECT: Recalculando agrupamento (com mais dados)...');
   const pendingPayments = payments.filter((p) => p.status === 'pending');
 
-  const grouped = pendingPayments.reduce<Record<string, Payment[]>>(
-    (acc, payment) => {
-      const requester = payment.requester;
-      if (!acc[requester]) {
-        acc[requester] = [];
-      }
-      acc[requester].push(payment);
-      return acc;
-    },
-    {}
-  );
+  // Agrupa pegando o primeiro departamento encontrado para cada requester
+  const grouped = pendingPayments.reduce<
+    Record<string, { dept?: string; items: Payment[] }>
+  >((acc, payment) => {
+    const requester = payment.requester;
+    if (!acc[requester]) {
+      acc[requester] = { dept: payment.requesterDepartment, items: [] }; // Guarda o primeiro depto encontrado
+    }
+    acc[requester].items.push(payment);
+    return acc;
+  }, {});
 
   const formattedSections: PaymentSection[] = Object.entries(grouped)
-    .map(([requesterName, paymentData]) => ({
+    .map(([requesterName, groupData]) => ({
       requesterName: requesterName,
-      requesterPhotoUrl: undefined,
-      data: paymentData,
+      // TODO: No futuro, buscar URL da foto real baseada no requesterName/ID
+      requesterPhotoUrl: `https://i.pravatar.cc/150?u=${requesterName.replace(
+        /\s+/g,
+        ''
+      )}`, // Placeholder divertido do pravatar
+      requesterDepartment: groupData.dept, // Pega o departamento que guardamos
+      count: groupData.items.length, // A contagem de itens
+      data: groupData.items, // Os pagamentos
     }))
     .sort((a, b) => a.requesterName.localeCompare(b.requesterName));
 

@@ -26,48 +26,69 @@ export default StyleSheet.create({
     color: Colors.textMuted,
   },
   sectionHeader: {
-    marginHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.card2, // Cor de fundo do cabeçalho da seção
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
+    backgroundColor: Colors.card,
+    padding: 12, // Ajuste padding geral
+    borderWidth: 1, // Talvez remover borda? Ou manter
     borderColor: Colors.border,
-    borderRadius: 24,
-    marginTop: 10, // Espaço antes de uma nova seção
+    marginTop: 10,
+    borderRadius: 24, // Borda arredondada no header?
+    marginHorizontal: 10, // Margem lateral
   },
-  sectionHeaderIcon: {
-    // Estilo para o ícone do usuário
-    marginRight: 10, // Espaço entre o ícone e o texto
-  },
-  requesterPhotoPlaceholder: {
-    width: 36,
-    height: 36,
-    borderRadius: 18, // Metade da largura/altura para círculo perfeito
-    backgroundColor: Colors.primary, // Cor de fundo do placeholder
-    justifyContent: 'center',
-    alignItems: 'center',
+  requesterPhoto: {
+    // Estilo para a Image
+    width: 44,
+    height: 44,
+    borderRadius: 20, // Círculo perfeito
     marginRight: 12,
+    backgroundColor: Colors.inputBackground, // Cor de fundo enquanto carrega
   },
-  requesterInitial: {
-    color: Colors.background, // Cor da letra inicial (contraste com fundo do placeholder)
-    fontSize: 16,
-    fontWeight: 'bold',
+  requesterInfoContainer: {
+    // Container para nome/depto
+    flex: 1, // Ocupa o espaço disponível
+    justifyContent: 'center', // Alinha verticalmente no centro
+    marginRight: 8, // Espaço antes do badge
   },
-  sectionHeaderText: {
-    flex: 1, // Faz o nome ocupar o espaço restante
+  requesterNameText: {
+    // Estilo para o nome
     fontSize: 16,
     fontWeight: 'bold',
     color: Colors.text,
   },
-  sectionToggleIndicator: {
-    fontSize: 18,
+  requesterDeptText: {
+    // Estilo para o departamento
+    fontSize: 13,
     color: Colors.textSecondary,
-    paddingLeft: 10,
+    marginTop: 2, // Espaço entre nome e depto
   },
+  badgeContainer: {
+    // Estilo para o badge
+    backgroundColor: Colors.primary, // Cor primária (amarelo) ou outra
+    borderRadius: 12, // Bem arredondado
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 24, // Largura mínima
+    height: 24, // Altura fixa
+    marginRight: 8, // Espaço antes do chevron
+  },
+  badgeText: {
+    // Estilo para o texto dentro do badge
+    color: Colors.background, // Cor contrastante com o fundo do badge
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  chevronIcon: {
+    // Estilo para o ícone chevron (se precisar de margem)
+    // marginLeft: 'auto', // Empurra para a direita (alternativa)
+  },
+  // Remover sectionHeaderIcon se não usar mais
+  // Ajustar sectionHeaderText se mudou (agora é requesterNameText)
+  // Ajustar/remover sectionToggleIndicator se não usar mais
   sectionSeparator: {
-    height: 4, // Espaço visual entre o fim de uma seção e o cabeçalho da próxima
-    // backgroundColor: Colors.background // Pode usar a cor de fundo geral
+    // Manter se gostar do espaço
+    height: 5, // Diminuir talvez?
   },
 });
