@@ -1,4 +1,5 @@
 import AppButton from '@/components/AppButton';
+import RejectionModal from '@/components/RejectionModal';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -12,7 +13,6 @@ import {
   Platform,
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -48,7 +48,6 @@ export default function PaymentDetailScreen() {
   const cancelPayment = usePaymentStore((state) => state.cancelPayment);
 
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('');
 
   // --- ESTADOS PARA MODAL DE HISTÓRICO ---
   const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
@@ -118,28 +117,22 @@ export default function PaymentDetailScreen() {
   const handleReject = () => {
     if (!paymentDetails) return;
     console.log('Reject button pressed, opening modal...');
-    setRejectionReason(''); // Limpa o motivo anterior
-    setIsRejectModalVisible(true); // Abre o modal
-    // Não chama rejectPayment(id) nem router.back() aqui!
+    // Não precisa mais limpar rejectionReason aqui
+    setIsRejectModalVisible(true);
   };
 
-  const handleConfirmRejection = () => {
+  const handleConfirmRejection = (reasonFromModal: string) => {
     if (!paymentDetails) return;
-
-    // Apenas para demonstração: loga o motivo, fecha modal, alerta e navega
     console.log(
-      `Rejeitando pagamento ${paymentDetails.id} com motivo: ${rejectionReason}`
+      `CONFIRMANDO Rejeição para ${paymentDetails.id}. Motivo: ${reasonFromModal}`
     );
-
-    // TODO - Na Fase 3: Chamar a ação da store passando o motivo
-    // rejectPayment(paymentDetails.id, rejectionReason);
-
-    setIsRejectModalVisible(false); // Fecha o modal
+    // TODO - Fase 3: Chamar rejectPayment(paymentDetails.id, reasonFromModal);
+    setIsRejectModalVisible(false); // Fecha o modal (ainda é responsabilidade do pai)
     Alert.alert(
       'Rejeitado',
       `Pagamento para ${paymentDetails.payee} rejeitado (motivo simulado).`
-    ); // Feedback
-    router.back(); // Volta para a lista
+    );
+    router.back();
   };
 
   const handleCancel = () => {
@@ -327,44 +320,13 @@ export default function PaymentDetailScreen() {
       </ScrollView>
 
       {/* Modal de Rejeição */}
-      <Modal
-        animationType='fade'
-        transparent={true}
-        visible={isRejectModalVisible}
-        onRequestClose={() => setIsRejectModalVisible(false)}
-      >
-        <KeyboardAvoidingView // Adiciona KAV aqui também para o input no modal
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.modalCenteredView} // Usa o estilo que centraliza e escurece
-        >
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Motivo da Rejeição</Text>
-            <TextInput
-              style={styles.modalTextInput}
-              placeholder='Digite o motivo aqui...'
-              placeholderTextColor={Colors.textMuted}
-              value={rejectionReason}
-              onChangeText={setRejectionReason}
-              multiline={true}
-              numberOfLines={4}
-            />
-            <View style={styles.modalButtonContainer}>
-              <AppButton
-                title='Cancelar'
-                onPress={() => setIsRejectModalVisible(false)}
-                variant='muted' // Ou 'default'
-                style={{ flex: 1, marginRight: 5 }} // Estilo para ajustar largura
-              />
-              <AppButton
-                title='Confirmar'
-                onPress={handleConfirmRejection}
-                variant='danger' // Ou 'warning'? Mantendo danger por ora
-                style={{ flex: 1, marginLeft: 5 }}
-              />
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <RejectionModal
+        isVisible={isRejectModalVisible}
+        payeeName={paymentDetails?.payee || ''} // Passa o nome para o título do modal
+        onClose={() => setIsRejectModalVisible(false)} // Função para fechar
+        onSubmit={handleConfirmRejection} // Função a ser chamada ao confirmar
+      />
+
       {/* --- NOVO Modal de Histórico --- */}
       <Modal
         animationType='slide'
@@ -408,7 +370,6 @@ export default function PaymentDetailScreen() {
           </View>
         </View>
       </Modal>
-      {/* --- Fim do Modal Histórico --- */}
     </KeyboardAvoidingView>
   );
 }

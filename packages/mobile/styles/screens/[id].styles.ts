@@ -86,7 +86,31 @@ export default StyleSheet.create({
     gap: 10,
   },
 
-  // --- Estilos do Modal de Rejeição ---
+  historyButton: {
+    // Estilo para o botão "Ver Histórico"
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center', // Centraliza o botão
+    marginBottom: 20, // Espaço abaixo dele
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    backgroundColor: Colors.card, // Ou outra cor
+    // Talvez uma borda sutil
+    borderWidth: 1,
+    borderColor: Colors.primary,
+  },
+  historyButtonText: {
+    marginLeft: 8,
+    color: Colors.primary,
+    fontWeight: 'bold',
+  },
+
+  // Estilos para o Modal de Histórico (pode reutilizar modalView, modalTitle...)
+  historyModalView: {
+    // Estilo adicional se quiser diferenciar do modal de rejeição
+    maxHeight: '70%', // Limita a altura máxima
+  },
   modalCenteredView: {
     flex: 1,
     justifyContent: 'center',
@@ -113,85 +137,6 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: Colors.text,
-  },
-  modalTextInput: {
-    width: '100%',
-    minHeight: 100,
-    maxHeight: 150,
-    backgroundColor: Colors.inputBackground,
-
-    paddingVertical: 10, // Padding vertical
-    paddingHorizontal: 15, // Padding horizontal
-    marginBottom: 25, // Aumentei espaço antes dos botões
-    textAlignVertical: 'top', // Começa a digitar do topo
-    fontSize: 16,
-    color: Colors.text,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', // Espaçar botões do modal
-    width: '100%',
-    marginTop: 10,
-    gap: 10, // Espaço entre botões do modal
-  },
-  // --- Estilos Opcionais para Botões do Modal (se NÃO usar AppButton dentro dele) ---
-  /*
-    modalButton: {
-        borderRadius: 8,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        elevation: 2,
-        flex: 1, // Faz os botões dividirem espaço
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    modalButtonCancel: {
-        backgroundColor: Colors.textMuted, // Cinza
-        marginRight: 5, // Metade do gap
-    },
-    modalButtonConfirm: {
-        backgroundColor: Colors.error, // Vermelho
-        marginLeft: 5, // Metade do gap
-    },
-    modalButtonTextCancel: {
-        color: Colors.text, // Ajuste contraste se textMuted for claro
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    modalButtonTextConfirm: {
-        color: '#FFFFFF', // Branco geralmente contrasta bem com vermelho
-        fontWeight: 'bold',
-        textAlign: 'center',
-    }
-    */
-
-  historyButton: {
-    // Estilo para o botão "Ver Histórico"
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center', // Centraliza o botão
-    marginBottom: 20, // Espaço abaixo dele
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-    backgroundColor: Colors.card, // Ou outra cor
-    // Talvez uma borda sutil
-    borderWidth: 1,
-    borderColor: Colors.primary,
-  },
-  historyButtonText: {
-    marginLeft: 8,
-    color: Colors.primary,
-    fontWeight: 'bold',
-  },
-
-  // Estilos para o Modal de Histórico (pode reutilizar modalView, modalTitle...)
-  historyModalView: {
-    // Estilo adicional se quiser diferenciar do modal de rejeição
-    maxHeight: '70%', // Limita a altura máxima
   },
   historyListItem: {
     flexDirection: 'row',
