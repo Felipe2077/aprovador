@@ -1,17 +1,19 @@
 import AppButton from '@/components/AppButton';
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Button,
+  FlatList,
   KeyboardAvoidingView,
   Modal,
   Platform,
   ScrollView,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { getTextColorForVariant } from '../../components/AppButton/AppButton.styles'; //
@@ -27,6 +29,12 @@ import styles from '../../styles/screens/[id].styles';
  * Permite aprovar, rejeitar ou cancelar o pagamento.
  */
 
+interface HistoryItem {
+  id: string;
+  displayDate: string;
+  formattedAmount: string;
+}
+
 export default function PaymentDetailScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [paymentDetails, setPaymentDetails] = useState<
@@ -41,6 +49,46 @@ export default function PaymentDetailScreen() {
 
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+
+  // --- ESTADOS PARA MODAL DE HISTÓRICO ---
+  const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
+  const [paymentHistoryData, setPaymentHistoryData] = useState<HistoryItem[]>(
+    []
+  );
+
+  const handleOpenHistoryModal = () => {
+    if (!paymentDetails) return;
+
+    console.log(`Abrindo histórico para payee: ${paymentDetails.payee}`);
+    const allPayments = usePaymentStore.getState().payments;
+
+    const history = allPayments
+      .filter(
+        (p) =>
+          p.payee === paymentDetails.payee && // Mesmo fornecedor
+          p.status === 'approved' && // Apenas aprovados (ou ajuste se quiser outros status)
+          p.id !== paymentDetails.id // Exclui o próprio pagamento atual
+      )
+      .sort(
+        (a, b) =>
+          new Date(b.dueDate || b.createdAt).getTime() -
+          new Date(a.dueDate || a.createdAt).getTime()
+      ) // Ordena do mais recente para o mais antigo
+      .map((p) => ({
+        // Formata para exibição
+        id: p.id,
+        // Formata data para Mês/Ano (ex: 03/2025)
+        displayDate: new Intl.DateTimeFormat('pt-BR', {
+          month: '2-digit',
+          year: 'numeric',
+        }).format(new Date(p.dueDate || p.createdAt)),
+        formattedAmount: formatCurrency(p.amount, p.currency),
+      }));
+
+    console.log('Histórico encontrado:', history);
+    setPaymentHistoryData(history);
+    setIsHistoryModalVisible(true); // Abre o modal
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -147,8 +195,14 @@ export default function PaymentDetailScreen() {
 
         {/* Título da Página */}
         <Text style={styles.title}>Detalhes do Pagamento</Text>
-
-        {/* Seção de Detalhes */}
+        {/* Botão de Histórico (ex: perto do título ou dos botões de ação) */}
+        <TouchableOpacity
+          onPress={handleOpenHistoryModal}
+          style={styles.historyButton}
+        >
+          <FontAwesome name='history' size={18} color={Colors.primary} />
+          <Text style={styles.historyButtonText}>Ver Histórico</Text>
+        </TouchableOpacity>
         <View style={styles.detailItem}>
           <View style={styles.labelContainer}>
             <Ionicons
@@ -311,6 +365,50 @@ export default function PaymentDetailScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+      {/* --- NOVO Modal de Histórico --- */}
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={isHistoryModalVisible}
+        onRequestClose={() => setIsHistoryModalVisible(false)}
+      >
+        <View style={styles.modalCenteredView}>
+          <View style={[styles.modalView, styles.historyModalView]}>
+            {' '}
+            {/* Estilo customizado opcional */}
+            <Text style={styles.modalTitle}>
+              Histórico para: {paymentDetails.payee}
+            </Text>
+            {paymentHistoryData.length > 0 ? (
+              <FlatList
+                data={paymentHistoryData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <View style={styles.historyListItem}>
+                    <Text style={styles.historyDate}>{item.displayDate}</Text>
+                    <Text style={styles.historyAmount}>
+                      {item.formattedAmount}
+                    </Text>
+                  </View>
+                )}
+                style={{ width: '100%' }} // Garante que FlatList use a largura
+              />
+            ) : (
+              <Text style={styles.historyEmptyText}>
+                Nenhum histórico encontrado.
+              </Text>
+            )}
+            {/* Botão Fechar */}
+            <AppButton
+              title='Fechar'
+              onPress={() => setIsHistoryModalVisible(false)}
+              variant='muted' // Ou 'primary'
+              style={{ marginTop: 20, width: '60%' }} // Estilo para ajustar
+            />
+          </View>
+        </View>
+      </Modal>
+      {/* --- Fim do Modal Histórico --- */}
     </KeyboardAvoidingView>
   );
 }

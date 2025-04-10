@@ -4,8 +4,8 @@ export interface Payment {
   currency: 'BRL' | 'USD' | 'EUR';
   payee: string;
   requester: string;
+  requesterDepartment?: string;
   dueDate: string;
   status: 'pending' | 'approved' | 'rejected' | 'cancelled';
   description?: string;
-  departament: string;
 }

@@ -167,4 +167,54 @@ export default StyleSheet.create({
         textAlign: 'center',
     }
     */
+
+  historyButton: {
+    // Estilo para o botão "Ver Histórico"
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center', // Centraliza o botão
+    marginBottom: 20, // Espaço abaixo dele
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    backgroundColor: Colors.card, // Ou outra cor
+    // Talvez uma borda sutil
+    borderWidth: 1,
+    borderColor: Colors.primary,
+  },
+  historyButtonText: {
+    marginLeft: 8,
+    color: Colors.primary,
+    fontWeight: 'bold',
+  },
+
+  // Estilos para o Modal de Histórico (pode reutilizar modalView, modalTitle...)
+  historyModalView: {
+    // Estilo adicional se quiser diferenciar do modal de rejeição
+    maxHeight: '70%', // Limita a altura máxima
+  },
+  historyListItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  historyDate: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+  },
+  historyAmount: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.text,
+  },
+  historyEmptyText: {
+    fontSize: 16,
+    color: Colors.textMuted,
+    marginTop: 20,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
 });
