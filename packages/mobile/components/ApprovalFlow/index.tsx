@@ -1,7 +1,8 @@
 // packages/mobile/components/ApprovalFlow/index.tsx
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TextStyle, View } from 'react-native'; // <--- ADICIONE TextStyle
+
 import styles from './ApprovalFlow.styles';
 
 // Define o tipo esperado para cada passo na sequência
@@ -18,13 +19,16 @@ interface ApprovalFlowProps {
 export default function ApprovalFlow({ sequence }: ApprovalFlowProps) {
   const getStatusStyleAndIcon = (
     status: string
-  ): { style: object; icon: keyof typeof Ionicons.glyphMap } => {
+  ): { style: TextStyle; icon: keyof typeof Ionicons.glyphMap } => {
     switch (status) {
       case 'Aprovado':
+        // Garanta que styles.statusApproved seja compatível com TextStyle
         return { style: styles.statusApproved, icon: 'checkmark-circle' };
       case 'Pendente':
+        // Garanta que styles.statusPending seja compatível com TextStyle
         return { style: styles.statusPending, icon: 'time-outline' };
-      default: // Não Iniciado ou outros
+      default:
+        // Garanta que styles.statusDefault seja compatível com TextStyle
         return { style: styles.statusDefault, icon: 'ellipse-outline' };
     }
   };
