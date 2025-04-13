@@ -8,6 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   Text,
   useWindowDimensions,
   View,
@@ -20,6 +21,7 @@ import {
   TabBarProps,
   TabView,
 } from 'react-native-tab-view'; // Imports do TabView
+import PaymentDetailCard from '../../components/PaymentDetailCard'; // <--- Importe o novo componente
 
 // Imports do Projeto (Verifique os Caminhos!)
 import PaymentActionButtons from '@/components/PaymentActionButtons'; // <--- Importe o novo componente
@@ -142,9 +144,28 @@ export default function PaymentDetailScreen() {
   // --- Render Scene e TabBar ---
   // Placeholders - serão substituídos por componentes reais depois
   const DetailsTab = () => (
-    <View style={styles.tabSceneContainer}>
-      <Text style={styles.placeholderText}>[DETALHES DO PAGAMENTO]</Text>
-    </View>
+    // Use ScrollView aqui pois o conteúdo pode crescer
+    <ScrollView
+      style={styles.tabSceneContainer}
+      contentContainerStyle={{ paddingBottom: 20 }}
+    >
+      {/* Renderiza o card de detalhes passando os dados */}
+      <PaymentDetailCard payment={paymentDetails!} />
+      {/* O '!' acima assume que paymentDetails não será null/undefined aqui,
+             pois já tratamos esses casos antes de renderizar o TabView.
+             Se preferir, pode adicionar uma verificação:
+             {paymentDetails && <PaymentDetailCard payment={paymentDetails} />} */}
+
+      {/* TODO: Adicionar os componentes ApprovalFlow e AttachmentList aqui depois */}
+      <View style={{ marginTop: 30 }}>
+        <Text style={styles.placeholderText}>
+          [Placeholder Fluxo Aprovação]
+        </Text>
+      </View>
+      <View style={{ marginTop: 30 }}>
+        <Text style={styles.placeholderText}>[Placeholder Anexos]</Text>
+      </View>
+    </ScrollView>
   );
   const HistoryTab = () => (
     <View style={styles.tabSceneContainer}>

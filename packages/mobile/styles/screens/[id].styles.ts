@@ -60,45 +60,4 @@ export default StyleSheet.create({
     margin: 0,
     paddingHorizontal: 4, // Pode ajustar/remover se tabStyle já cuida
   },
-
-  // --- Estilos dos Itens de Detalhes (irão para dentro da Aba 'Detalhes') ---
-  detailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-    // Adicionar um padding horizontal aqui se não tiver no tabSceneContainer
-    // paddingHorizontal: 5,
-  },
-  labelContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
-    flexShrink: 1, // Permite encolher
-  },
-  labelIcon: {
-    marginRight: 8,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.textSecondary,
-  },
-  value: {
-    fontSize: 16,
-    color: Colors.text,
-    flexShrink: 1,
-    textAlign: 'right',
-  },
-  amountValue: {
-    fontWeight: 'bold',
-    color: Colors.primary,
-  },
-
-  // --- Estilos Removidos (Estão nos seus próprios componentes) ---
-  // - historyButton, historyButtonText (botão foi removido)
-  // - modalCenteredView, modalView, modalTitle, etc. (estão em RejectionModal.styles.ts)
-  // - historyModalView, historyListItem, etc. (estão em HistoryModal.styles.ts - que será removido)
 });
