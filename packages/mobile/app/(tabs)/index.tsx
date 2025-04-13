@@ -1,5 +1,4 @@
 // app/(tabs)/index.tsx
-import { Payment } from '@/constants/Payment';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -11,13 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Payment, PaymentSection } from 'shared-types';
 import PaymentListItem from '../../components/PaymentListItem';
 import Colors from '../../constants/Colors';
 import {
-  PaymentSection,
   selectMemoizedGroupedPendingPayments,
   usePaymentStore,
 } from '../../store/paymentStore';
+
 import styles from '../../styles/screens/TabsIndex.styles';
 
 export default function PendingPaymentsScreen() {

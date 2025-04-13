@@ -1,22 +1,17 @@
 // packages/mobile/store/authStore.ts
 import * as SecureStore from 'expo-secure-store';
+import { UserProfile } from 'shared-types';
 import { create } from 'zustand';
 
 // Definição simplificada do User (ajuste conforme necessário ou importe do local correto)
-interface User {
-  id: string;
-  username: string;
-  name: string | null;
-  role: 'REQUESTER' | 'DIRECTOR'; // Use o Enum se compartilhado
-}
 
 interface AuthState {
-  user: User | null;
+  user: UserProfile | null;
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoadingAuth: boolean; // Para saber se a verificação inicial está ocorrendo
   checkAuth: () => Promise<void>;
-  loginSuccess: (token: string, userData?: User) => Promise<void>; // Adicionado para simplificar o fluxo de login
+  loginSuccess: (token: string, userData?: UserProfile) => Promise<void>; // Adicionado para simplificar o fluxo de login
   logout: () => Promise<void>;
 }
 
@@ -30,7 +25,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isLoadingAuth: true,
 
   // Ação chamada no login bem-sucedido
-  loginSuccess: async (token: string, userData?: User) => {
+  loginSuccess: async (token: string, userData?: UserProfile) => {
     await SecureStore.setItemAsync(TOKEN_KEY, token);
     // Se os dados do usuário já vieram do /me (ou login), armazena
     // Senão, poderíamos chamar /me aqui

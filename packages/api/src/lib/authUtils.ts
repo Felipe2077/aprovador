@@ -1,5 +1,6 @@
 // packages/api/src/lib/authUtils.ts
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { UserRole } from 'shared-types';
 
 /**
  * Verifica se o usuário autenticado na requisição tem o papel 'DIRECTOR'.
@@ -11,14 +12,13 @@ export async function verifyDirectorRole(
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<void> {
-  const user = request.user; // Pega o usuário do token (populado pelo authenticate)
+  const user = request.user; // Tipado globalmente via fastify.d.ts
 
   // Se não há usuário ou o papel não é DIRECTOR
-  if (!user || user.role !== 'DIRECTOR') {
+  if (!user || user.role !== UserRole.DIRECTOR) {
     await reply
       .code(403)
       .send({ message: 'Forbidden: Director role required' });
-    // A execução da rota para aqui se o reply.send for chamado
   }
   // Se for diretor, a função termina sem fazer nada, permitindo a continuação
 }
@@ -35,7 +35,7 @@ export async function verifyRequesterRole(
 ): Promise<void> {
   const user = request.user;
 
-  if (!user || user.role !== 'REQUESTER') {
+  if (!user || user.role !== UserRole.REQUESTER) {
     await reply
       .code(403)
       .send({ message: 'Forbidden: Requester role required' });

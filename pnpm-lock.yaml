@@ -49,6 +49,9 @@ importers:
       fastify-plugin:
         specifier: ^5.0.1
         version: 5.0.1
+      shared-types:
+        specifier: workspace:*
+        version: link:../shared-types
     devDependencies:
       '@types/bcrypt':
         specifier: ^5.0.2
@@ -137,6 +140,9 @@ importers:
       reselect:
         specifier: ^5.1.1
         version: 5.1.1
+      shared-types:
+        specifier: workspace:*
+        version: link:../shared-types
       zustand:
         specifier: ^5.0.3
         version: 5.0.3(@types/react@18.3.20)(react@18.3.1)(use-sync-external-store@1.5.0(react@18.3.1))
@@ -159,6 +165,12 @@ importers:
       typescript:
         specifier: ~5.3.3
         version: 5.3.3
+
+  packages/shared-types:
+    dependencies:
+      '@prisma/client':
+        specifier: ^6.5.0
+        version: 6.5.0(prisma@6.5.0(typescript@5.3.3))(typescript@5.3.3)
 
 packages:
 

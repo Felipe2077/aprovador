@@ -1,6 +1,6 @@
-// packages/api/src/types/fastify.d.ts
 import { FastifyJWT } from '@fastify/jwt';
 import 'fastify';
+import { BaseUser, UserRole } from 'shared-types';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -12,15 +12,22 @@ declare module 'fastify' {
       reply: FastifyReply
     ): Promise<void>;
   }
-
   interface FastifyRequest {
-    user?: FastifyJWT['user'];
+    user?: BaseUser & { sub: string };
   }
 }
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: { sub: string; role: string; name?: string };
-    user: { sub: string; role: string; name?: string };
+    payload: {
+      sub: string;
+      role: UserRole;
+      name?: string;
+    };
+    user: {
+      sub: string;
+      role: UserRole;
+      name?: string;
+    };
   }
 }

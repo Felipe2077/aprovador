@@ -1,16 +1,9 @@
 // packages/mobile/components/HistoryModal/index.tsx
 import React from 'react';
 import { FlatList, Modal, Text, View } from 'react-native';
+import { HistoryItem } from 'shared-types';
 import AppButton from '../AppButton';
 import styles from './HistoryModal.styles'; // Estilos locais
-
-// Interface para o item de histórico (igual à definida antes em [id].tsx)
-// Poderia vir de um arquivo types/ compartilhado no futuro
-interface HistoryItem {
-  id: string;
-  displayDate: string;
-  formattedAmount: string;
-}
 
 // Props que o Modal de Histórico receberá
 interface HistoryModalProps {

@@ -14,11 +14,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { HistoryItem, Payment, PaymentStatus } from 'shared-types';
 import { getTextColorForVariant } from '../../components/AppButton/AppButton.styles'; //
 import HistoryModal from '../../components/HistoryModal'; // <--- Importe o novo modal
 import Colors from '../../constants/Colors';
 import { formatCurrency } from '../../constants/formatCurrency';
-import { Payment } from '../../constants/Payment';
 import { usePaymentStore } from '../../store/paymentStore';
 import styles from '../../styles/screens/[id].styles';
 
@@ -27,12 +27,6 @@ import styles from '../../styles/screens/[id].styles';
  * Exibe informações detalhadas sobre um pagamento específico.
  * Permite aprovar, rejeitar ou cancelar o pagamento.
  */
-
-interface HistoryItem {
-  id: string;
-  displayDate: string;
-  formattedAmount: string;
-}
 
 export default function PaymentDetailScreen() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,7 +56,7 @@ export default function PaymentDetailScreen() {
       .filter(
         (p) =>
           p.payee === paymentDetails.payee &&
-          p.status === 'approved' &&
+          p.status === PaymentStatus.APPROVED &&
           p.id !== paymentDetails.id
       )
       .sort(
@@ -226,7 +220,7 @@ export default function PaymentDetailScreen() {
             />
             <Text style={styles.label}>Solicitante:</Text>
           </View>
-          <Text style={styles.value}>{paymentDetails.requester}</Text>
+          <Text style={styles.value}>{paymentDetails.requesterId}</Text>
         </View>
         <View style={styles.detailItem}>
           <View style={styles.labelContainer}>
@@ -238,7 +232,20 @@ export default function PaymentDetailScreen() {
             />
             <Text style={styles.label}>Vencimento:</Text>
           </View>
-          <Text style={styles.value}>{paymentDetails.dueDate || 'N/A'}</Text>
+          <Text style={styles.value}>
+            {
+              paymentDetails.dueDate
+                ? // Se dueDate existe...
+                  // Tenta criar um objeto Date (funciona com Date ou string ISO)
+                  // e formata para o padrão brasileiro (ou outro de sua preferência)
+                  new Date(paymentDetails.dueDate).toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })
+                : 'N/A' // Se dueDate for null ou undefined, mostra N/A
+            }
+          </Text>
         </View>
         {paymentDetails.description && (
           <View style={styles.detailItem}>
@@ -268,7 +275,7 @@ export default function PaymentDetailScreen() {
         </View>
 
         {/* Botões de Ação (Apenas se pendente) */}
-        {paymentDetails.status === 'pending' && (
+        {paymentDetails.status === PaymentStatus.PENDING && (
           <View style={styles.buttonContainer}>
             <AppButton
               title='Cancelar'

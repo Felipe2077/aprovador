@@ -2,8 +2,8 @@
 import { Link } from 'expo-router';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { Payment } from 'shared-types';
 import { formatCurrency } from '../../constants/formatCurrency'; // Ajuste o caminho
-import { Payment } from '../../constants/Payment';
 import styles from './PaymentListItem.styles'; // Caminho relativo dentro da mesma pasta
 
 interface PaymentListItemProps {
@@ -17,7 +17,7 @@ export default function PaymentListItem({ payment }: PaymentListItemProps) {
         <View style={styles.textContainer}>
           <Text style={styles.payee}>{payment.payee}</Text>
           <Text style={styles.requester}>
-            Solicitado por: {payment.requester}
+            Solicitado por: {payment.requesterId}
           </Text>
           <Text style={styles.dueDate}>Vencimento: {payment.dueDate}</Text>
         </View>
