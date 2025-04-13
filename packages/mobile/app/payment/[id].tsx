@@ -27,6 +27,7 @@ import PaymentDetailCard from '../../components/PaymentDetailCard'; // <--- Impo
 import PaymentActionButtons from '@/components/PaymentActionButtons'; // <--- Importe o novo componente
 import { Payment, PaymentStatus } from 'shared-types'; // Tipos compartilhados
 import AppButton from '../../components/AppButton';
+import ApprovalFlow from '../../components/ApprovalFlow'; // <--- Adicione esta importação
 import RejectionModal from '../../components/RejectionModal';
 import Colors from '../../constants/Colors';
 import { usePaymentStore } from '../../store/paymentStore'; // Store de Pagamentos (apenas para ações)
@@ -34,7 +35,7 @@ import styles from '../../styles/screens/[id].styles'; // Estilos desta tela
 
 // Define o tipo para as rotas das abas
 type PaymentTabRoute = Route & {
-  key: 'details' | 'history' | 'flow' | 'attachments';
+  key: 'details' | 'history'; // Apenas as chaves que realmente usamos
 };
 
 export default function PaymentDetailScreen() {
@@ -61,8 +62,6 @@ export default function PaymentDetailScreen() {
   const [tabRoutes] = useState<PaymentTabRoute[]>([
     { key: 'details', title: 'Detalhes' },
     { key: 'history', title: 'Histórico' },
-    { key: 'flow', title: 'Fluxo' },
-    { key: 'attachments', title: 'Anexos' },
   ]);
 
   // --- Mocks Temporários para Placeholders ---
@@ -144,29 +143,20 @@ export default function PaymentDetailScreen() {
   // --- Render Scene e TabBar ---
   // Placeholders - serão substituídos por componentes reais depois
   const DetailsTab = () => (
-    // Use ScrollView aqui pois o conteúdo pode crescer
     <ScrollView
       style={styles.tabSceneContainer}
-      contentContainerStyle={{ paddingBottom: 20 }}
+      contentContainerStyle={{ paddingBottom: 20 }} // Padding no final do scroll
     >
-      {/* Renderiza o card de detalhes passando os dados */}
       <PaymentDetailCard payment={paymentDetails!} />
-      {/* O '!' acima assume que paymentDetails não será null/undefined aqui,
-             pois já tratamos esses casos antes de renderizar o TabView.
-             Se preferir, pode adicionar uma verificação:
-             {paymentDetails && <PaymentDetailCard payment={paymentDetails} />} */}
 
-      {/* TODO: Adicionar os componentes ApprovalFlow e AttachmentList aqui depois */}
-      <View style={{ marginTop: 30 }}>
-        <Text style={styles.placeholderText}>
-          [Placeholder Fluxo Aprovação]
-        </Text>
-      </View>
+      <ApprovalFlow sequence={mockApprovalSequence} />
+
       <View style={{ marginTop: 30 }}>
         <Text style={styles.placeholderText}>[Placeholder Anexos]</Text>
       </View>
     </ScrollView>
   );
+
   const HistoryTab = () => (
     <View style={styles.tabSceneContainer}>
       <Text style={styles.placeholderText}>[HISTÓRICO DE CONVERSA]</Text>
@@ -174,25 +164,11 @@ export default function PaymentDetailScreen() {
       {/* {mockComments.map(c => <Text key={c.id} style={{color: Colors.text}}>{c.text}</Text>)} */}
     </View>
   );
-  const FlowTab = () => (
-    <View style={styles.tabSceneContainer}>
-      <Text style={styles.placeholderText}>[FLUXO DE APROVAÇÃO]</Text>
-      {/* {mockApprovalSequence.map(a => <Text key={a.id} style={{color: Colors.text}}>{a.name} ({a.status})</Text>)} */}
-    </View>
-  );
-  const AttachmentsTab = () => (
-    <View style={styles.tabSceneContainer}>
-      <Text style={styles.placeholderText}>[LISTA DE ANEXOS]</Text>
-      {/* {mockAttachments.map(a => <Text key={a.id} style={{color: Colors.text}}>{a.name}</Text>)} */}
-    </View>
-  );
 
   // SceneMap continua usando essas funções
   const renderScene = SceneMap({
     details: DetailsTab,
     history: HistoryTab,
-    flow: FlowTab,
-    attachments: AttachmentsTab,
   });
 
   const renderTabBar = (
@@ -260,13 +236,7 @@ export default function PaymentDetailScreen() {
       style={{ flex: 1, backgroundColor: Colors.background }}
     >
       {/* Header */}
-      <Stack.Screen
-        options={
-          {
-            /* ... */
-          }
-        }
-      />
+      <Stack.Screen options={{}} />
 
       {/* Título */}
       <Text style={styles.title}>Detalhes do Pagamento</Text>
@@ -281,8 +251,6 @@ export default function PaymentDetailScreen() {
         style={{ flex: 1 }} // <-- MUITO IMPORTANTE
       />
 
-      {/* Botões de Ação (RENDERIZA O NOVO COMPONENTE AQUI) */}
-      {/* Renderiza apenas se pendente */}
       {paymentDetails.status === PaymentStatus.PENDING && (
         <PaymentActionButtons
           onApprove={handleApprove}
