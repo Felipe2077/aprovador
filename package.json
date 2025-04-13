@@ -9,7 +9,11 @@
     "dev:mobile": "pnpm --filter mobile start",
     "dev:api": "pnpm --filter api run dev",
     "build:api": "pnpm --filter api run build",
-    "start:api": "pnpm --filter api run start"
+    "start:api": "pnpm --filter api run start",
+    "typecheck:api": "pnpm --filter api exec tsc --noEmit",
+    "typecheck:mobile": "pnpm --filter mobile exec tsc --noEmit",
+    "typecheck:shared": "pnpm --filter shared-types exec tsc --noEmit",
+    "typecheck": "pnpm run typecheck:shared && pnpm run typecheck:api && pnpm run typecheck:mobile"
   },
   "keywords": [],
   "author": "",
