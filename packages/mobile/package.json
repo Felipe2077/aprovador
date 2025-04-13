@@ -1,5 +1,6 @@
 {
   "name": "mobile",
+  "extends": "../../tsconfig.base.json",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -7,7 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "typecheck": "tsc --noEmit"
   },
   "jest": {
     "preset": "jest-expo"

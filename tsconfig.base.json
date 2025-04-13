@@ -1,0 +1,13 @@
+// ./tsconfig.base.json (na RAIZ do monorepo)
+{
+  "compilerOptions": {
+    // Opções Comuns a Todos os Pacotes
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "sourceMap": true // Habilita source maps por padrão
+    // Outras opções comuns... (target, module podem variar)
+  }
+}

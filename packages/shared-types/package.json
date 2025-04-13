@@ -1,15 +1,17 @@
 {
-   "name": "shared-types",
-   "version": "1.0.0",
-   "private": true,
-   "description": "Tipos e Enums compartilhados entre API e Mobile",
-   "main": "src/index.ts",
-   "types": "src/index.ts",
-   "scripts": {},
-   "keywords": [],
-   "author": "",
-   "license": "ISC",
-   "dependencies": {
-      "@prisma/client": "^6.5.0"
-   }
+  "name": "shared-types",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tipos e Enums compartilhados entre API e Mobile",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.5.0"
+  }
 }

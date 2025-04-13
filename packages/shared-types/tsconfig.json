@@ -1,0 +1,20 @@
+// packages/shared-types/tsconfig.json
+{
+  // Mantenha o "extends" se você criou o base.json
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+
+    // --- Opções de Módulo/Target/Strict ---
+    "module": "CommonJS",
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strict": true, // Herdado da base se usou extends
+    "skipLibCheck": true, // Herdado da base se usou extends
+    "forceConsistentCasingInFileNames": true // Herdado da base se usou extends
+    // moduleResolution: "node", // Geralmente herdado ou padrão ok
+  },
+  "include": ["src"], // Pode ser apenas src
+  "exclude": ["node_modules", "dist"] // dist não será criado com noEmit: true
+}
