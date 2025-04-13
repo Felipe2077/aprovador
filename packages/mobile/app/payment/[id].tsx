@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { HistoryItem, Payment, PaymentStatus } from 'shared-types';
 import { getTextColorForVariant } from '../../components/AppButton/AppButton.styles'; //
-import HistoryModal from '../../components/HistoryModal'; // <--- Importe o novo modal
+import HistoryModal from '../../components/HistoryModal';
 import Colors from '../../constants/Colors';
 import { formatCurrency } from '../../constants/formatCurrency';
 import { usePaymentStore } from '../../store/paymentStore';
@@ -47,6 +47,33 @@ export default function PaymentDetailScreen() {
   const [paymentHistoryData, setPaymentHistoryData] = useState<HistoryItem[]>(
     []
   );
+  const mockApprovalSequence = [
+    { id: 'user_john_123', name: 'João Silva', status: 'Aprovado' },
+    { id: 'user_mary_456', name: 'Maria Souza', status: 'Pendente' },
+    { id: 'user_director_999', name: 'Diretor X', status: 'Não Iniciado' },
+    { id: 'user_finance_000', name: 'Financeiro Dept', status: 'Não Iniciado' },
+  ];
+
+  const mockComments = [
+    {
+      id: 'c1',
+      author: 'Diretor X',
+      date: '12/04/2025 15:30',
+      text: 'Rejeitado. Favor detalhar o item XYZ na descrição.',
+    },
+    {
+      id: 'c2',
+      author: paymentDetails?.requesterName || 'Solicitante',
+      date: '13/04/2025 09:15',
+      text: 'Ajuste feito conforme solicitado.',
+    },
+  ];
+
+  const mockAttachments = [
+    { id: 'a1', name: 'nota_fiscal_12345.pdf', type: 'pdf' },
+    { id: 'a2', name: 'comprovante_adiantamento.jpg', type: 'image' },
+    { id: 'a3', name: 'contrato_servico_assinado.pdf', type: 'pdf' },
+  ];
 
   const handleOpenHistoryModal = () => {
     if (!paymentDetails) return;
@@ -273,6 +300,98 @@ export default function PaymentDetailScreen() {
           </View>
           <Text style={styles.value}>{paymentDetails.status}</Text>
         </View>
+
+        {/* --- SEÇÃO PLACEHOLDER: FLUXO DE APROVAÇÃO --- */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Fluxo de Aprovação</Text>
+          {mockApprovalSequence.map((approver, index) => (
+            <View key={approver.id} style={styles.sequenceItem}>
+              <Ionicons
+                name={
+                  approver.status === 'Aprovado'
+                    ? 'checkmark-circle'
+                    : approver.status === 'Pendente'
+                    ? 'time-outline'
+                    : 'ellipse-outline'
+                }
+                size={20}
+                color={
+                  approver.status === 'Aprovado'
+                    ? Colors.success
+                    : approver.status === 'Pendente'
+                    ? Colors.warning
+                    : Colors.textMuted
+                }
+                style={styles.sequenceIcon}
+              />
+              <Text
+                style={[
+                  styles.sequenceText,
+                  {
+                    color:
+                      approver.status === 'Pendente'
+                        ? Colors.warning
+                        : Colors.textSecondary,
+                  },
+                ]}
+              >
+                {index + 1}. {approver.name} ({approver.status})
+              </Text>
+            </View>
+          ))}
+        </View>
+        {/* ------------------------------------------- */}
+
+        {/* --- SEÇÃO PLACEHOLDER: HISTÓRICO DE CONVERSA --- */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Histórico de Conversa</Text>
+          {mockComments.length > 0 ? (
+            mockComments.map((comment) => (
+              <View key={comment.id} style={styles.commentItem}>
+                <Text style={styles.commentAuthor}>
+                  {comment.author} ({comment.date}):
+                </Text>
+                <Text style={styles.commentText}>{comment.text}</Text>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.placeholderText}>
+              Nenhum comentário nesta solicitação.
+            </Text>
+          )}
+        </View>
+        {/* ------------------------------------------- */}
+
+        {/* --- SEÇÃO PLACEHOLDER: ANEXOS --- */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Anexos</Text>
+          {mockAttachments.length > 0 ? (
+            mockAttachments.map((attachment) => (
+              // Tornar clicável depois para abrir o anexo
+              <TouchableOpacity
+                key={attachment.id}
+                style={styles.attachmentItem}
+              >
+                <Ionicons
+                  name={
+                    attachment.type === 'pdf'
+                      ? 'document-text-outline'
+                      : 'image-outline'
+                  }
+                  size={20}
+                  color={Colors.primary}
+                  style={styles.attachmentIcon}
+                />
+                <Text style={styles.attachmentText}>{attachment.name}</Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.placeholderText}>
+              Nenhum anexo nesta solicitação.
+            </Text>
+          )}
+        </View>
+        {/* ------------------------------------------- */}
 
         {/* Botões de Ação (Apenas se pendente) */}
         {paymentDetails.status === PaymentStatus.PENDING && (

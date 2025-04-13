@@ -105,4 +105,77 @@ export default StyleSheet.create({
     color: Colors.primary,
     fontWeight: 'bold',
   },
+
+  // --- Estilos dos placeholders ---
+  sectionContainer: {
+    marginTop: 20, // Espaço acima de cada nova seção
+    marginBottom: 10,
+    // Opcional: Estilo de Card para cada seção
+    // backgroundColor: Colors.card,
+    // borderRadius: 8,
+    // padding: 15,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginBottom: 10,
+    paddingBottom: 5,
+    borderBottomWidth: 1, // Linha separadora para o título da seção
+    borderBottomColor: Colors.border,
+  },
+  // Estilos para Fluxo de Aprovação
+  sequenceItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  sequenceIcon: {
+    marginRight: 8,
+  },
+  sequenceText: {
+    fontSize: 15,
+    // color: Colors.textSecondary, // Cor definida dinamicamente no JSX
+  },
+  // Estilos para Histórico de Conversa
+  commentItem: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: Colors.inputBackground, // Fundo ligeiramente diferente
+    borderRadius: 6,
+  },
+  commentAuthor: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: Colors.textSecondary,
+    marginBottom: 3,
+  },
+  commentText: {
+    fontSize: 14,
+    color: Colors.text,
+  },
+  // Estilos para Anexos
+  attachmentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    // borderBottomWidth: 1, // Linha separadora opcional entre anexos
+    // borderBottomColor: Colors.border,
+  },
+  attachmentIcon: {
+    marginRight: 10,
+  },
+  attachmentText: {
+    fontSize: 15,
+    color: Colors.link, // Cor de link para indicar clicável
+    flexShrink: 1, // Permite quebrar texto se nome for longo
+  },
+  // Estilo genérico para mensagens de placeholder
+  placeholderText: {
+    fontSize: 14,
+    color: Colors.textMuted,
+    marginTop: 5,
+    fontStyle: 'italic',
+    textAlign: 'center',
+  },
 });
