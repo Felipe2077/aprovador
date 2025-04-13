@@ -3,6 +3,7 @@ import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { comparePassword } from '../lib/hash';
 import { prisma } from '../lib/prisma';
+import { UserRole } from 'shared-types';
 
 const LoginBodySchema = Type.Object({
   username: Type.String(),
@@ -35,7 +36,8 @@ export default async function authRoutes(
       const accessToken = await reply.jwtSign(
         {
           sub: user.id,
-          role: user.role,
+          role: user.role as UserRole, // Diz ao TS: "Trate o user.role do Prisma como o UserRole de shared-types"
+
           name: user.name,
         },
         {

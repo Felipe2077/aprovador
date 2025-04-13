@@ -170,11 +170,7 @@ importers:
         specifier: ~5.3.3
         version: 5.3.3
 
-  packages/shared-types:
-    dependencies:
-      '@prisma/client':
-        specifier: ^6.5.0
-        version: 6.6.0(prisma@6.6.0(typescript@5.3.3))(typescript@5.3.3)
+  packages/shared-types: {}
 
 packages:
 
