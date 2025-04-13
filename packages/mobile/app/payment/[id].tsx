@@ -18,7 +18,7 @@ import {
   TabView,
 } from 'react-native-tab-view';
 
-// Imports do Projeto (VERIFIQUE OS CAMINHOS!)
+// Imports do Projeto
 import { Payment, PaymentStatus } from 'shared-types'; // Tipos de shared-types
 import AppButton from '../../components/AppButton'; // Botão customizado
 import ApprovalFlow from '../../components/ApprovalFlow'; // Componente Fluxo
@@ -59,7 +59,7 @@ export default function PaymentDetailScreen() {
   const [tabIndex, setTabIndex] = useState(0);
   const [tabRoutes] = useState<PaymentTabRoute[]>([
     { key: 'details', title: 'Informações' },
-    { key: 'history', title: 'Histórico' },
+    { key: 'history', title: 'Mensagens' },
   ]);
 
   // --- Mocks Temporários para Placeholders ---

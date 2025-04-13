@@ -4,8 +4,11 @@ import Colors from '../../constants/Colors'; // Ajuste o caminho
 
 export default StyleSheet.create({
   container: {
-    marginTop: 20, // Espaço acima da seção
-    marginBottom: 10,
+    backgroundColor: Colors.card, // Fundo do card
+    padding: 8, // Espaçamento interno
+    borderWidth: 1, // Borda do card
+    borderColor: Colors.border, // Cor da borda
+    borderRadius: 8, // Bordas arredondadas
   },
   title: {
     fontSize: 16, // Um pouco menor que o título principal da tela
@@ -34,7 +37,7 @@ export default StyleSheet.create({
     flex: 1, // Ocupa espaço restante
   },
   statusPending: {
-    color: Colors.warning, // Laranja para pendente
+    color: Colors.warningText, // Laranja para pendente
     fontWeight: 'bold',
   },
   statusApproved: {

@@ -1,7 +1,7 @@
 // packages/mobile/styles/screens/PaymentDetail.styles.ts
 // VERSÃO LIMPA PARA A ESTRUTURA COM ABAS E COMPONENTES EXTRAÍDOS
 
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors'; // Ajuste o caminho
 
 export default StyleSheet.create({
@@ -35,7 +35,7 @@ export default StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 15,
-    marginTop: Platform.OS === 'ios' ? 0 : 10,
+    marginTop: 10,
     textAlign: 'center',
     color: Colors.text,
     paddingHorizontal: 20,
