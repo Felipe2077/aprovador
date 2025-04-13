@@ -19,7 +19,16 @@ export default function PaymentListItem({ payment }: PaymentListItemProps) {
           <Text style={styles.requester}>
             Solicitado por: {payment.requesterId}
           </Text>
-          <Text style={styles.dueDate}>Vencimento: {payment.dueDate}</Text>
+          <Text style={styles.dueDate}>
+            Vencimento:
+            {payment.dueDate
+              ? new Date(payment.dueDate).toLocaleDateString('pt-BR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                })
+              : 'N/A'}
+          </Text>
         </View>
         <View style={styles.amountContainer}>
           <Text style={styles.amount}>

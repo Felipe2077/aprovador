@@ -38,7 +38,10 @@ export default function TabLayout() {
         name='index'
         options={{
           title: 'APs pendentes',
-          tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name='list' color={color} />
+          ),
+
           headerRight: () => (
             <Pressable
               onPress={handleLogout}
