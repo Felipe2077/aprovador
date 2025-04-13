@@ -28,6 +28,7 @@ import PaymentActionButtons from '@/components/PaymentActionButtons'; // <--- Im
 import { Payment, PaymentStatus } from 'shared-types'; // Tipos compartilhados
 import AppButton from '../../components/AppButton';
 import ApprovalFlow from '../../components/ApprovalFlow'; // <--- Adicione esta importação
+import AttachmentList from '../../components/AttachmentList'; // <--- Importe
 import RejectionModal from '../../components/RejectionModal';
 import Colors from '../../constants/Colors';
 import { usePaymentStore } from '../../store/paymentStore'; // Store de Pagamentos (apenas para ações)
@@ -148,20 +149,15 @@ export default function PaymentDetailScreen() {
       contentContainerStyle={{ paddingBottom: 20 }} // Padding no final do scroll
     >
       <PaymentDetailCard payment={paymentDetails!} />
-
       <ApprovalFlow sequence={mockApprovalSequence} />
 
-      <View style={{ marginTop: 30 }}>
-        <Text style={styles.placeholderText}>[Placeholder Anexos]</Text>
-      </View>
+      <AttachmentList attachments={mockAttachments} />
     </ScrollView>
   );
 
   const HistoryTab = () => (
     <View style={styles.tabSceneContainer}>
       <Text style={styles.placeholderText}>[HISTÓRICO DE CONVERSA]</Text>
-      {/* Renderizar mocks aqui dentro se quiser, mas o container é View */}
-      {/* {mockComments.map(c => <Text key={c.id} style={{color: Colors.text}}>{c.text}</Text>)} */}
     </View>
   );
 
