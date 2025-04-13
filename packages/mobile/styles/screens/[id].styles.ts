@@ -1,21 +1,22 @@
-// packages/mobile/styles/screens/[id].styles.ts
+// packages/mobile/styles/screens/PaymentDetail.styles.ts
+// VERSÃO LIMPA PARA ESTRUTURA MÍNIMA COM TABS
 
-import { StyleSheet } from 'react-native';
-import Colors from '../../constants/Colors'; // Ajuste o caminho se necessário
+import { Platform, StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors'; // Ajuste o caminho
 
 export default StyleSheet.create({
-  // --- Estilos Gerais da Tela (Usados também no Loading/Error) ---
+  // --- Estilos Gerais da Tela / Loading / Error ---
   container: {
-    flexGrow: 1, // Para ScrollView interno das abas ou view principal
+    // Usado pelo contentContainer do ScrollView interno das abas OU para Loading/Error
+    flexGrow: 1,
     padding: 20,
-    // A cor de fundo vem do ThemeProvider ou do container raiz no JSX
-    // backgroundColor: Colors.background
   },
   centerContent: {
+    // Para centralizar Loading/Error View
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: Colors.background // Herda ou define explicitamente
+    padding: 20,
   },
   loadingText: {
     marginTop: 10,
@@ -29,35 +30,46 @@ export default StyleSheet.create({
     marginBottom: 15,
   },
   title: {
+    // Título principal da tela (acima das abas)
     fontSize: 24,
     fontWeight: 'bold',
-    // Reduzi a margem inferior pois agora temos a TabBar logo abaixo
     marginBottom: 15,
+    marginTop: Platform.OS === 'ios' ? 0 : 10,
     textAlign: 'center',
     color: Colors.text,
+    paddingHorizontal: 20,
   },
 
-  // --- Estilos da TabView ---
-  // Note: 'tabView' em si não precisa de estilo aqui se usamos flex: 1 inline no JSX
+  // --- Estilos da TabView e Cenas ---
   tabSceneContainer: {
-    flex: 1, // <-- ESSENCIAL! Garante que a View da aba ocupe o espaço.
-    //backgroundColor: Colors.background, // Opcional, se precisar definir aqui
-    // padding: 15, // Opcional, padding interno da aba
+    // Estilo para a VIEW RAIZ de cada cena da aba
+    flex: 1, // ESSENCIAL!
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: Colors.background // Define cores diferentes nos placeholders para debug
   },
   placeholderText: {
-    // Estilo para o texto temporário das abas
-    padding: 20,
+    // Para o texto "ABA DETALHES / ABA HISTÓRICO"
     color: Colors.textMuted,
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 18,
     fontStyle: 'italic',
   },
   tabLabel: {
-    // color: Colors.text, // <-- REMOVA esta linha daqui
-    fontSize: 13,
+    // Estilo para o texto na TabBar
+    fontSize: 14,
     textTransform: 'capitalize',
-    fontWeight: '600',
+    fontWeight: 'bold',
     margin: 0,
-    paddingHorizontal: 4, // Pode ajustar/remover se tabStyle já cuida
+    paddingHorizontal: 8,
+    textAlign: 'center',
   },
+
+  // --- Estilos Removidos (Pertencem a componentes filhos) ---
+  // detailItem, labelContainer, labelIcon, label, value, amountValue
+  // sectionContainer, sectionTitle, sequenceItem, etc.
+  // attachmentItem, etc.
+  // buttonContainer
+  // Estilos de Modal (estão nos componentes de Modal)
+  // commentItem, etc.
 });
