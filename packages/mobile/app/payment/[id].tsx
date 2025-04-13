@@ -14,7 +14,6 @@ import {
   Route,
   SceneMap,
   TabBar,
-  TabBarLabelProps,
   TabBarProps,
   TabView,
 } from 'react-native-tab-view';
@@ -199,9 +198,12 @@ export default function PaymentDetailScreen() {
           route,
           focused,
           color,
-        }: TabBarLabelProps<PaymentTabRoute>) => (
-          <Text style={[styles.tabLabel, { color }]}>{route.title}</Text>
-        )}
+        }: {
+          // <-- Defina os tipos inline aqui
+          route: PaymentTabRoute;
+          focused: boolean;
+          color: string;
+        }) => <Text style={[styles.tabLabel, { color }]}>{route.title}</Text>}
       />
     ),
     [tabRoutes.length]
