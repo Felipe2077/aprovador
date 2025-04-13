@@ -1,22 +1,23 @@
 // packages/mobile/styles/screens/PaymentDetail.styles.ts
-// VERSÃO LIMPA PARA ESTRUTURA MÍNIMA COM TABS
+// VERSÃO LIMPA PARA A ESTRUTURA COM ABAS E COMPONENTES EXTRAÍDOS
 
 import { Platform, StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors'; // Ajuste o caminho
 
 export default StyleSheet.create({
-  // --- Estilos Gerais da Tela / Loading / Error ---
+  // --- Estilos Gerais da Tela (Loading/Error) ---
   container: {
-    // Usado pelo contentContainer do ScrollView interno das abas OU para Loading/Error
+    // Usado principalmente pelo contentContainer dos ScrollViews ou para Loading/Error
     flexGrow: 1,
     padding: 20,
   },
   centerContent: {
-    // Para centralizar Loading/Error View
+    // Para centralizar Loading/Error
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 20, // Mantém padding mesmo centralizado
+    backgroundColor: Colors.background, // Garante fundo escuro
   },
   loadingText: {
     marginTop: 10,
@@ -30,7 +31,7 @@ export default StyleSheet.create({
     marginBottom: 15,
   },
   title: {
-    // Título principal da tela (acima das abas)
+    // Título principal da tela
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 15,
@@ -40,19 +41,22 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
   },
 
-  // --- Estilos da TabView e Cenas ---
+  // --- Estilos da TabView ---
   tabSceneContainer: {
-    // Estilo para a VIEW RAIZ de cada cena da aba
-    flex: 1, // ESSENCIAL!
-    alignItems: 'center',
-    justifyContent: 'center',
-    // backgroundColor: Colors.background // Define cores diferentes nos placeholders para debug
+    flex: 1,
+  },
+  tabScrollContentContainer: {
+    // Estilo para o CONTEÚDO INTERNO do ScrollView das abas
+    padding: 15, // Padding interno
+    paddingBottom: 20, // Espaço no fim
+    flexGrow: 1, // Permite crescer e rolar
   },
   placeholderText: {
-    // Para o texto "ABA DETALHES / ABA HISTÓRICO"
+    // Texto para abas ainda não implementadas ou vazias
+    paddingVertical: 20,
     color: Colors.textMuted,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 16,
     fontStyle: 'italic',
   },
   tabLabel: {
@@ -65,11 +69,22 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
 
-  // --- Estilos Removidos (Pertencem a componentes filhos) ---
-  // detailItem, labelContainer, labelIcon, label, value, amountValue
-  // sectionContainer, sectionTitle, sequenceItem, etc.
-  // attachmentItem, etc.
-  // buttonContainer
-  // Estilos de Modal (estão nos componentes de Modal)
-  // commentItem, etc.
+  // --- Estilos para Seções/Conteúdo (Exemplo para Comentários, podem ir para seus componentes) ---
+  sectionTitle: {
+    // Título usado dentro da aba de Histórico (exemplo)
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginTop: 10, // Ajuste conforme necessário dentro da aba
+    marginBottom: 15,
+    // borderBottomWidth: 1, // Opcional
+    // borderBottomColor: Colors.border,
+  },
+
+  // --- ESTILOS REMOVIDOS que agora pertencem a componentes filhos ---
+  // detailItem, labelContainer, labelIcon, label, value, amountValue -> Em PaymentDetailCard.styles.ts
+  // sequenceItem, sequenceIcon, sequenceText -> Em ApprovalFlow.styles.ts
+  // attachmentItem, attachmentIcon, attachmentText -> Em AttachmentList.styles.ts
+  // buttonContainer -> Em PaymentActionButtons.styles.ts
+  // Modal styles -> Em RejectionModal.styles.ts
 });
