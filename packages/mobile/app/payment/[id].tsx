@@ -1,148 +1,137 @@
-import AppButton from '@/components/AppButton';
-import RejectionModal from '@/components/RejectionModal';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+// packages/mobile/app/payment/[id].tsx
+// Versão Completa com TabView Estrutural
+
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Button,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   Text,
-  TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
-import { HistoryItem, Payment, PaymentStatus } from 'shared-types';
-import { getTextColorForVariant } from '../../components/AppButton/AppButton.styles'; //
-import HistoryModal from '../../components/HistoryModal';
-import Colors from '../../constants/Colors';
-import { formatCurrency } from '../../constants/formatCurrency';
-import { usePaymentStore } from '../../store/paymentStore';
-import styles from '../../styles/screens/[id].styles';
+import {
+  Route,
+  SceneMap,
+  TabBar,
+  TabBarLabelProps,
+  TabBarProps,
+  TabView,
+} from 'react-native-tab-view'; // Imports do TabView
 
-/**
- * Tela de detalhes do pagamento.
- * Exibe informações detalhadas sobre um pagamento específico.
- * Permite aprovar, rejeitar ou cancelar o pagamento.
- */
+// Imports do Projeto (Verifique os Caminhos!)
+import PaymentActionButtons from '@/components/PaymentActionButtons'; // <--- Importe o novo componente
+import { Payment, PaymentStatus } from 'shared-types'; // Tipos compartilhados
+import AppButton from '../../components/AppButton';
+import RejectionModal from '../../components/RejectionModal';
+import Colors from '../../constants/Colors';
+import { usePaymentStore } from '../../store/paymentStore'; // Store de Pagamentos (apenas para ações)
+import styles from '../../styles/screens/[id].styles'; // Estilos desta tela
+
+// Define o tipo para as rotas das abas
+type PaymentTabRoute = Route & {
+  key: 'details' | 'history' | 'flow' | 'attachments';
+};
 
 export default function PaymentDetailScreen() {
+  // --- Hooks ---
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
+  const layout = useWindowDimensions();
+
+  // Ações da store Zustand
+  const approvePayment = usePaymentStore((state) => state.approvePayment);
+  const rejectPayment = usePaymentStore((state) => state.rejectPayment); // Ação real (usaremos na Fase 3)
+  const cancelPayment = usePaymentStore((state) => state.cancelPayment);
+
+  // --- Estados Locais ---
   const [loading, setLoading] = useState<boolean>(true);
   const [paymentDetails, setPaymentDetails] = useState<
     Payment | null | undefined
   >(undefined);
-
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const router = useRouter();
-  const approvePayment = usePaymentStore((state) => state.approvePayment);
-  const rejectPayment = usePaymentStore((state) => state.rejectPayment);
-  const cancelPayment = usePaymentStore((state) => state.cancelPayment);
-
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
+  // const [rejectionReason, setRejectionReason] = useState(''); // Movido para dentro do RejectionModal
 
-  // --- ESTADOS PARA MODAL DE HISTÓRICO ---
-  const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
-  const [paymentHistoryData, setPaymentHistoryData] = useState<HistoryItem[]>(
-    []
-  );
+  // Estado das Abas
+  const [tabIndex, setTabIndex] = useState(0);
+  const [tabRoutes] = useState<PaymentTabRoute[]>([
+    { key: 'details', title: 'Detalhes' },
+    { key: 'history', title: 'Histórico' },
+    { key: 'flow', title: 'Fluxo' },
+    { key: 'attachments', title: 'Anexos' },
+  ]);
+
+  // --- Mocks Temporários para Placeholders ---
+  // (Estes sairão quando criarmos os componentes das abas e passarmos dados reais)
   const mockApprovalSequence = [
-    { id: 'user_john_123', name: 'João Silva', status: 'Aprovado' },
-    { id: 'user_mary_456', name: 'Maria Souza', status: 'Pendente' },
-    { id: 'user_director_999', name: 'Diretor X', status: 'Não Iniciado' },
-    { id: 'user_finance_000', name: 'Financeiro Dept', status: 'Não Iniciado' },
+    { id: 'u1', name: 'João Silva', status: 'Aprovado' },
+    { id: 'u2', name: 'Maria Souza', status: 'Pendente' },
+    { id: 'u3', name: 'Diretor X', status: 'Não Iniciado' },
+    { id: 'u4', name: 'Financeiro Dept', status: 'Não Iniciado' },
   ];
-
   const mockComments = [
     {
       id: 'c1',
       author: 'Diretor X',
       date: '12/04/2025 15:30',
-      text: 'Rejeitado. Favor detalhar o item XYZ na descrição.',
+      text: 'Rejeitado. Favor detalhar...',
     },
     {
       id: 'c2',
       author: paymentDetails?.requesterName || 'Solicitante',
       date: '13/04/2025 09:15',
-      text: 'Ajuste feito conforme solicitado.',
+      text: 'Ajuste feito.',
     },
   ];
-
   const mockAttachments = [
     { id: 'a1', name: 'nota_fiscal_12345.pdf', type: 'pdf' },
-    { id: 'a2', name: 'comprovante_adiantamento.jpg', type: 'image' },
-    { id: 'a3', name: 'contrato_servico_assinado.pdf', type: 'pdf' },
+    { id: 'a2', name: 'comprovante.jpg', type: 'image' },
   ];
+  // -------------------------------------------
 
-  const handleOpenHistoryModal = () => {
-    if (!paymentDetails) return;
-    console.log(`Abrindo histórico para payee: ${paymentDetails.payee}`);
-    const allPayments = usePaymentStore.getState().payments;
-    const history = allPayments
-      .filter(
-        (p) =>
-          p.payee === paymentDetails.payee &&
-          p.status === PaymentStatus.APPROVED &&
-          p.id !== paymentDetails.id
-      )
-      .sort(
-        (a, b) =>
-          new Date(b.dueDate || b.createdAt).getTime() -
-          new Date(a.dueDate || a.createdAt).getTime()
-      )
-      .map((p) => ({
-        id: p.id,
-        displayDate: new Intl.DateTimeFormat('pt-BR', {
-          month: '2-digit',
-          year: 'numeric',
-        }).format(new Date(p.dueDate || p.createdAt)),
-        formattedAmount: formatCurrency(p.amount, p.currency),
-      }));
-    console.log('Histórico encontrado:', history);
-    setPaymentHistoryData(history);
-    setIsHistoryModalVisible(true);
-  };
-
+  // --- Efeito para Buscar Dados ---
   useEffect(() => {
     setLoading(true);
     setPaymentDetails(undefined);
-    console.log(`Buscando detalhes para ID: ${id}`);
     const timer = setTimeout(() => {
       const foundPayment = usePaymentStore
         .getState()
         .payments.find((p) => p.id === id);
-      console.log(
-        'Busca concluída, pagamento encontrado:',
-        foundPayment ? foundPayment.id : 'Nenhum'
-      );
       setPaymentDetails(foundPayment || null);
       setLoading(false);
     }, 500);
     return () => clearTimeout(timer);
   }, [id]);
 
+  // --- Handlers de Ação ---
   const handleApprove = () => {
     if (!paymentDetails) return;
     approvePayment(paymentDetails.id);
     Alert.alert('Sucesso', `Pagamento para ${paymentDetails.payee} aprovado!`);
     router.back();
   };
-
   const handleReject = () => {
     if (!paymentDetails) return;
-    console.log('Reject button pressed, opening modal...');
-    // Não precisa mais limpar rejectionReason aqui
     setIsRejectModalVisible(true);
   };
-
+  const handleCancel = () => {
+    if (!paymentDetails) return;
+    cancelPayment(paymentDetails.id);
+    Alert.alert(
+      'Cancelado',
+      `Pagamento para ${paymentDetails.payee} cancelado.`
+    );
+    router.back();
+  };
   const handleConfirmRejection = (reasonFromModal: string) => {
     if (!paymentDetails) return;
     console.log(
       `CONFIRMANDO Rejeição para ${paymentDetails.id}. Motivo: ${reasonFromModal}`
     );
     // TODO - Fase 3: Chamar rejectPayment(paymentDetails.id, reasonFromModal);
-    setIsRejectModalVisible(false); // Fecha o modal (ainda é responsabilidade do pai)
+    setIsRejectModalVisible(false);
     Alert.alert(
       'Rejeitado',
       `Pagamento para ${paymentDetails.payee} rejeitado (motivo simulado).`
@@ -150,309 +139,144 @@ export default function PaymentDetailScreen() {
     router.back();
   };
 
-  const handleCancel = () => {
-    if (!paymentDetails) return;
-    // Futuramente: pedir motivo do cancelamento aqui
-    cancelPayment(paymentDetails.id); // Chama a ação da store
-    Alert.alert(
-      'Cancelado',
-      `Pagamento para ${paymentDetails.payee} cancelado com sucesso.`
-    );
-    router.back();
-  };
+  // --- Render Scene e TabBar ---
+  // Placeholders - serão substituídos por componentes reais depois
+  const DetailsTab = () => (
+    <View style={styles.tabSceneContainer}>
+      <Text style={styles.placeholderText}>[DETALHES DO PAGAMENTO]</Text>
+    </View>
+  );
+  const HistoryTab = () => (
+    <View style={styles.tabSceneContainer}>
+      <Text style={styles.placeholderText}>[HISTÓRICO DE CONVERSA]</Text>
+      {/* Renderizar mocks aqui dentro se quiser, mas o container é View */}
+      {/* {mockComments.map(c => <Text key={c.id} style={{color: Colors.text}}>{c.text}</Text>)} */}
+    </View>
+  );
+  const FlowTab = () => (
+    <View style={styles.tabSceneContainer}>
+      <Text style={styles.placeholderText}>[FLUXO DE APROVAÇÃO]</Text>
+      {/* {mockApprovalSequence.map(a => <Text key={a.id} style={{color: Colors.text}}>{a.name} ({a.status})</Text>)} */}
+    </View>
+  );
+  const AttachmentsTab = () => (
+    <View style={styles.tabSceneContainer}>
+      <Text style={styles.placeholderText}>[LISTA DE ANEXOS]</Text>
+      {/* {mockAttachments.map(a => <Text key={a.id} style={{color: Colors.text}}>{a.name}</Text>)} */}
+    </View>
+  );
 
+  // SceneMap continua usando essas funções
+  const renderScene = SceneMap({
+    details: DetailsTab,
+    history: HistoryTab,
+    flow: FlowTab,
+    attachments: AttachmentsTab,
+  });
+
+  const renderTabBar = (
+    props: TabBarProps<PaymentTabRoute> // Use o tipo que definimos
+  ) => (
+    <TabBar
+      {...props} // Passa todas as props necessárias adiante
+      indicatorStyle={{ backgroundColor: Colors.primary }}
+      style={{ backgroundColor: Colors.card }}
+      activeColor={Colors.primary} // Cor ATIVA do texto/ícone da aba
+      inactiveColor={Colors.textMuted} // Cor INATIVA do texto/ícone da aba
+      scrollEnabled={true} // Permite scroll
+      tabStyle={{ width: 'auto', minWidth: 90, paddingHorizontal: 4 }} // Estilo do container de CADA aba
+      // --- ADICIONE A PROP renderLabel ---
+      renderLabel={(
+        { route, focused, color }: TabBarLabelProps<PaymentTabRoute> // <--- TIPO ADICIONADO
+      ) => <Text style={[styles.tabLabel, { color }]}>{route.title}</Text>}
+      // ------------------------------------
+    />
+  );
+
+  // --- Renderização Condicional (Loading / Erro) ---
   if (loading) {
     return (
       <View style={[styles.container, styles.centerContent]}>
-        <Stack.Screen options={{ title: 'Carregando...' }} />
-        <ActivityIndicator size='large' />
-        <Text style={styles.loadingText}>Buscando detalhes...</Text>
-      </View>
-    );
-  }
-
-  if (!paymentDetails) {
-    return (
-      <View style={[styles.container, styles.centerContent]}>
-        <Stack.Screen options={{ title: 'Erro' }} />
-        <Text style={styles.errorText}>Pagamento não encontrado.</Text>
-        <Button title='Voltar para Lista' onPress={() => router.back()} />
-      </View>
-    );
-  }
-
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1, backgroundColor: Colors.background }}
-    >
-      {/* ScrollView para o conteúdo principal */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps='handled' // Ajuda a fechar teclado ao tocar fora no Android
-      >
-        {/* Configura título dinâmico do header */}
         <Stack.Screen
           options={{
-            title: `Pagamento ${paymentDetails.id}`,
+            title: 'Carregando...',
             headerTintColor: Colors.text,
             headerBackTitle: '',
           }}
         />
+        <ActivityIndicator size='large' color={Colors.primary} />
+        <Text style={[styles.loadingText, { color: Colors.textSecondary }]}>
+          Buscando detalhes...
+        </Text>
+      </View>
+    );
+  }
+  if (!paymentDetails) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Stack.Screen
+          options={{
+            title: 'Erro',
+            headerTintColor: Colors.text,
+            headerBackTitle: '',
+          }}
+        />
+        <Text style={styles.errorText}>Pagamento não encontrado.</Text>
+        <AppButton
+          title='Voltar para Lista'
+          onPress={() => router.back()}
+          variant='primary'
+        />
+      </View>
+    );
+  }
 
-        {/* Título da Página */}
-        <Text style={styles.title}>Detalhes do Pagamento</Text>
-        {/* Botão de Histórico (ex: perto do título ou dos botões de ação) */}
-        <TouchableOpacity
-          onPress={handleOpenHistoryModal}
-          style={styles.historyButton}
-        >
-          <FontAwesome name='history' size={18} color={Colors.primary} />
-          <Text style={styles.historyButtonText}>Ver Histórico</Text>
-        </TouchableOpacity>
-        <View style={styles.detailItem}>
-          <View style={styles.labelContainer}>
-            <Ionicons
-              name='person-outline'
-              size={18}
-              color={Colors.textSecondary}
-              style={styles.labelIcon}
-            />
-            <Text style={styles.label}>Recebedor:</Text>
-          </View>
-          <Text style={styles.value}>{paymentDetails.payee}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <View style={styles.labelContainer}>
-            <Ionicons
-              name='cash-outline'
-              size={18}
-              color={Colors.textSecondary}
-              style={styles.labelIcon}
-            />
-            <Text style={styles.label}>Valor:</Text>
-          </View>
-          <Text style={[styles.value, styles.amountValue]}>
-            {formatCurrency(paymentDetails.amount, paymentDetails.currency)}
-          </Text>
-        </View>
-        <View style={styles.detailItem}>
-          <View style={styles.labelContainer}>
-            <Ionicons
-              name='person-circle-outline'
-              size={18}
-              color={Colors.textSecondary}
-              style={styles.labelIcon}
-            />
-            <Text style={styles.label}>Solicitante:</Text>
-          </View>
-          <Text style={styles.value}>{paymentDetails.requesterId}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <View style={styles.labelContainer}>
-            <Ionicons
-              name='calendar-outline'
-              size={18}
-              color={Colors.textSecondary}
-              style={styles.labelIcon}
-            />
-            <Text style={styles.label}>Vencimento:</Text>
-          </View>
-          <Text style={styles.value}>
-            {
-              paymentDetails.dueDate
-                ? // Se dueDate existe...
-                  // Tenta criar um objeto Date (funciona com Date ou string ISO)
-                  // e formata para o padrão brasileiro (ou outro de sua preferência)
-                  new Date(paymentDetails.dueDate).toLocaleDateString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  })
-                : 'N/A' // Se dueDate for null ou undefined, mostra N/A
-            }
-          </Text>
-        </View>
-        {paymentDetails.description && (
-          <View style={styles.detailItem}>
-            <View style={styles.labelContainer}>
-              <Ionicons
-                name='document-text-outline'
-                size={18}
-                color={Colors.textSecondary}
-                style={styles.labelIcon}
-              />
-              <Text style={styles.label}>Descrição:</Text>
-            </View>
-            <Text style={styles.value}>{paymentDetails.description}</Text>
-          </View>
-        )}
-        <View style={styles.detailItem}>
-          <View style={styles.labelContainer}>
-            <Ionicons
-              name='information-circle-outline'
-              size={18}
-              color={Colors.textSecondary}
-              style={styles.labelIcon}
-            />
-            <Text style={styles.label}>Status Atual:</Text>
-          </View>
-          <Text style={styles.value}>{paymentDetails.status}</Text>
-        </View>
-
-        {/* --- SEÇÃO PLACEHOLDER: FLUXO DE APROVAÇÃO --- */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Fluxo de Aprovação</Text>
-          {mockApprovalSequence.map((approver, index) => (
-            <View key={approver.id} style={styles.sequenceItem}>
-              <Ionicons
-                name={
-                  approver.status === 'Aprovado'
-                    ? 'checkmark-circle'
-                    : approver.status === 'Pendente'
-                    ? 'time-outline'
-                    : 'ellipse-outline'
-                }
-                size={20}
-                color={
-                  approver.status === 'Aprovado'
-                    ? Colors.success
-                    : approver.status === 'Pendente'
-                    ? Colors.warning
-                    : Colors.textMuted
-                }
-                style={styles.sequenceIcon}
-              />
-              <Text
-                style={[
-                  styles.sequenceText,
-                  {
-                    color:
-                      approver.status === 'Pendente'
-                        ? Colors.warning
-                        : Colors.textSecondary,
-                  },
-                ]}
-              >
-                {index + 1}. {approver.name} ({approver.status})
-              </Text>
-            </View>
-          ))}
-        </View>
-        {/* ------------------------------------------- */}
-
-        {/* --- SEÇÃO PLACEHOLDER: HISTÓRICO DE CONVERSA --- */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Histórico de Conversa</Text>
-          {mockComments.length > 0 ? (
-            mockComments.map((comment) => (
-              <View key={comment.id} style={styles.commentItem}>
-                <Text style={styles.commentAuthor}>
-                  {comment.author} ({comment.date}):
-                </Text>
-                <Text style={styles.commentText}>{comment.text}</Text>
-              </View>
-            ))
-          ) : (
-            <Text style={styles.placeholderText}>
-              Nenhum comentário nesta solicitação.
-            </Text>
-          )}
-        </View>
-        {/* ------------------------------------------- */}
-
-        {/* --- SEÇÃO PLACEHOLDER: ANEXOS --- */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Anexos</Text>
-          {mockAttachments.length > 0 ? (
-            mockAttachments.map((attachment) => (
-              // Tornar clicável depois para abrir o anexo
-              <TouchableOpacity
-                key={attachment.id}
-                style={styles.attachmentItem}
-              >
-                <Ionicons
-                  name={
-                    attachment.type === 'pdf'
-                      ? 'document-text-outline'
-                      : 'image-outline'
-                  }
-                  size={20}
-                  color={Colors.primary}
-                  style={styles.attachmentIcon}
-                />
-                <Text style={styles.attachmentText}>{attachment.name}</Text>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text style={styles.placeholderText}>
-              Nenhum anexo nesta solicitação.
-            </Text>
-          )}
-        </View>
-        {/* ------------------------------------------- */}
-
-        {/* Botões de Ação (Apenas se pendente) */}
-        {paymentDetails.status === PaymentStatus.PENDING && (
-          <View style={styles.buttonContainer}>
-            <AppButton
-              title='Cancelar'
-              onPress={handleCancel}
-              variant='danger'
-              iconLeft={
-                <Ionicons
-                  name='close-circle-outline'
-                  size={20}
-                  color={getTextColorForVariant('danger')}
-                />
-              }
-              disabled={loading}
-            />
-            <AppButton
-              title='Rejeitar'
-              onPress={handleReject}
-              variant='warning'
-              iconLeft={
-                <Ionicons
-                  name='arrow-undo-outline'
-                  size={20}
-                  color={getTextColorForVariant('warning')}
-                />
-              }
-              disabled={loading}
-            />
-            <AppButton
-              title='Aprovar'
-              onPress={handleApprove}
-              variant='success'
-              iconLeft={
-                <Ionicons
-                  name='thumbs-up-outline'
-                  size={20}
-                  color={getTextColorForVariant('success')}
-                />
-              }
-              disabled={loading}
-            />
-          </View>
-        )}
-      </ScrollView>
-
-      {/* Modal de Rejeição */}
-      <RejectionModal
-        isVisible={isRejectModalVisible}
-        payeeName={paymentDetails?.payee || ''} // Passa o nome para o título do modal
-        onClose={() => setIsRejectModalVisible(false)} // Função para fechar
-        onSubmit={handleConfirmRejection} // Função a ser chamada ao confirmar
+  // --- Renderização Principal (Caso de Sucesso com TabView) ---
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      // Removi o View wrapper interno que testamos antes, vamos ver se KAV direto funciona
+      style={{ flex: 1, backgroundColor: Colors.background }}
+    >
+      {/* Header */}
+      <Stack.Screen
+        options={
+          {
+            /* ... */
+          }
+        }
       />
 
-      {/* --- Modal de Histórico --- */}
-      <HistoryModal
-        isVisible={isHistoryModalVisible}
-        payeeName={paymentDetails?.payee || ''} // Passa o nome
-        historyData={paymentHistoryData} // Passa os dados do histórico
-        onClose={() => setIsHistoryModalVisible(false)} // Passa a função para fechar
+      {/* Título */}
+      <Text style={styles.title}>Detalhes do Pagamento</Text>
+
+      {/* TabView ocupando o espaço flexível */}
+      <TabView
+        navigationState={{ index: tabIndex, routes: tabRoutes }}
+        renderScene={renderScene}
+        onIndexChange={setTabIndex}
+        initialLayout={{ width: layout.width }}
+        renderTabBar={renderTabBar}
+        style={{ flex: 1 }} // <-- MUITO IMPORTANTE
+      />
+
+      {/* Botões de Ação (RENDERIZA O NOVO COMPONENTE AQUI) */}
+      {/* Renderiza apenas se pendente */}
+      {paymentDetails.status === PaymentStatus.PENDING && (
+        <PaymentActionButtons
+          onApprove={handleApprove}
+          onReject={handleReject}
+          onCancel={handleCancel}
+          isLoading={loading} // Passa o estado de loading da tela
+        />
+      )}
+
+      {/* Modal de Rejeição (mantém aqui fora) */}
+      <RejectionModal
+        isVisible={isRejectModalVisible}
+        payeeName={paymentDetails?.payee || ''}
+        onClose={() => setIsRejectModalVisible(false)}
+        onSubmit={handleConfirmRejection}
       />
     </KeyboardAvoidingView>
   );

@@ -1,181 +1,104 @@
-// packages/mobile/styles/screens/PaymentDetail.styles.ts
-// (Ou o caminho/nome correto que você usou para os estilos desta tela)
+// packages/mobile/styles/screens/[id].styles.ts
 
 import { StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors'; // Ajuste o caminho se necessário
 
 export default StyleSheet.create({
-  // --- Estilos Gerais da Tela ---
-  scrollView: {
-    flex: 1,
-    // O fundo será herdado do ThemeProvider ou do container abaixo
-  },
+  // --- Estilos Gerais da Tela (Usados também no Loading/Error) ---
   container: {
-    flexGrow: 1, // Importante para o ScrollView permitir crescimento do conteúdo
-    padding: 20, // Padding geral da tela
-    // backgroundColor: Colors.background // Geralmente não precisa se ThemeProvider define
+    flexGrow: 1, // Para ScrollView interno das abas ou view principal
+    padding: 20,
+    // A cor de fundo vem do ThemeProvider ou do container raiz no JSX
+    // backgroundColor: Colors.background
   },
   centerContent: {
-    // Para centralizar loading e erro
-    flex: 1, // Precisa de flex: 1 para ocupar espaço e centralizar
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20, // Mantém o padding
+    // backgroundColor: Colors.background // Herda ou define explicitamente
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: Colors.textSecondary, // Cor mais sutil para texto de loading
+    color: Colors.textSecondary,
+  },
+  errorText: {
+    fontSize: 18,
+    color: Colors.error,
+    textAlign: 'center',
+    marginBottom: 15,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 25, // Aumentei um pouco a margem inferior
+    // Reduzi a margem inferior pois agora temos a TabBar logo abaixo
+    marginBottom: 15,
     textAlign: 'center',
     color: Colors.text,
   },
-  errorText: {
-    fontSize: 18,
-    color: Colors.error, // Cor de erro
+
+  // --- Estilos da TabView ---
+  // Note: 'tabView' em si não precisa de estilo aqui se usamos flex: 1 inline no JSX
+  tabSceneContainer: {
+    flex: 1, // <-- ESSENCIAL! Garante que a View da aba ocupe o espaço.
+    //backgroundColor: Colors.background, // Opcional, se precisar definir aqui
+    // padding: 15, // Opcional, padding interno da aba
+  },
+  placeholderText: {
+    // Estilo para o texto temporário das abas
+    padding: 20,
+    color: Colors.textMuted,
     textAlign: 'center',
-    marginBottom: 15,
+    fontSize: 16,
+    fontStyle: 'italic',
+  },
+  tabLabel: {
+    // color: Colors.text, // <-- REMOVA esta linha daqui
+    fontSize: 13,
+    textTransform: 'capitalize',
+    fontWeight: '600',
+    margin: 0,
+    paddingHorizontal: 4, // Pode ajustar/remover se tabStyle já cuida
   },
 
-  // --- Estilos dos Detalhes ---
+  // --- Estilos dos Itens de Detalhes (irão para dentro da Aba 'Detalhes') ---
   detailItem: {
-    flexDirection: 'row', // Label+Icon lado a lado com Valor
-    justifyContent: 'space-between', // Espaçar Label/Valor
-    alignItems: 'center', // Alinhar verticalmente no centro
-    paddingVertical: 12, // Espaçamento vertical
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border, // Cor sutil da borda/separador
+    borderBottomColor: Colors.border,
+    // Adicionar um padding horizontal aqui se não tiver no tabSceneContainer
+    // paddingHorizontal: 5,
   },
   labelContainer: {
-    // Container para agrupar Ícone + Label
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 10, // Espaço à direita antes do valor
-    flexShrink: 1, // Permite que o label encolha se o valor for muito grande
+    marginRight: 10,
+    flexShrink: 1, // Permite encolher
   },
   labelIcon: {
-    // Estilo para o ícone ao lado do label
-    marginRight: 8, // Espaço entre ícone e texto
+    marginRight: 8,
   },
   label: {
     fontSize: 16,
-    fontWeight: '600', // Semi-bold
-    color: Colors.textSecondary, // Cor secundária para label
+    fontWeight: '600',
+    color: Colors.textSecondary,
   },
   value: {
     fontSize: 16,
-    color: Colors.text, // Cor principal para o valor
-    flexShrink: 1, // Permite encolher se necessário
-    textAlign: 'right', // Alinha valor à direita
+    color: Colors.text,
+    flexShrink: 1,
+    textAlign: 'right',
   },
   amountValue: {
-    // Estilo específico para o valor monetário
     fontWeight: 'bold',
-    color: Colors.primary, // Cor primária/acento para destaque
-  },
-
-  // --- Estilos dos Botões de Ação ---
-  buttonContainer: {
-    flexDirection: 'row',
-    marginTop: 30,
-    paddingVertical: 10,
-    gap: 10,
-  },
-
-  historyButton: {
-    // Estilo para o botão "Ver Histórico"
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center', // Centraliza o botão
-    marginBottom: 20, // Espaço abaixo dele
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-    backgroundColor: Colors.card, // Ou outra cor
-    // Talvez uma borda sutil
-    borderWidth: 1,
-    borderColor: Colors.primary,
-  },
-  historyButtonText: {
-    marginLeft: 8,
     color: Colors.primary,
-    fontWeight: 'bold',
   },
 
-  // --- Estilos dos placeholders ---
-  sectionContainer: {
-    marginTop: 20, // Espaço acima de cada nova seção
-    marginBottom: 10,
-    // Opcional: Estilo de Card para cada seção
-    // backgroundColor: Colors.card,
-    // borderRadius: 8,
-    // padding: 15,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.text,
-    marginBottom: 10,
-    paddingBottom: 5,
-    borderBottomWidth: 1, // Linha separadora para o título da seção
-    borderBottomColor: Colors.border,
-  },
-  // Estilos para Fluxo de Aprovação
-  sequenceItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
-  sequenceIcon: {
-    marginRight: 8,
-  },
-  sequenceText: {
-    fontSize: 15,
-    // color: Colors.textSecondary, // Cor definida dinamicamente no JSX
-  },
-  // Estilos para Histórico de Conversa
-  commentItem: {
-    marginBottom: 10,
-    padding: 10,
-    backgroundColor: Colors.inputBackground, // Fundo ligeiramente diferente
-    borderRadius: 6,
-  },
-  commentAuthor: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: Colors.textSecondary,
-    marginBottom: 3,
-  },
-  commentText: {
-    fontSize: 14,
-    color: Colors.text,
-  },
-  // Estilos para Anexos
-  attachmentItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    // borderBottomWidth: 1, // Linha separadora opcional entre anexos
-    // borderBottomColor: Colors.border,
-  },
-  attachmentIcon: {
-    marginRight: 10,
-  },
-  attachmentText: {
-    fontSize: 15,
-    color: Colors.link, // Cor de link para indicar clicável
-    flexShrink: 1, // Permite quebrar texto se nome for longo
-  },
-  // Estilo genérico para mensagens de placeholder
-  placeholderText: {
-    fontSize: 14,
-    color: Colors.textMuted,
-    marginTop: 5,
-    fontStyle: 'italic',
-    textAlign: 'center',
-  },
+  // --- Estilos Removidos (Estão nos seus próprios componentes) ---
+  // - historyButton, historyButtonText (botão foi removido)
+  // - modalCenteredView, modalView, modalTitle, etc. (estão em RejectionModal.styles.ts)
+  // - historyModalView, historyListItem, etc. (estão em HistoryModal.styles.ts - que será removido)
 });
