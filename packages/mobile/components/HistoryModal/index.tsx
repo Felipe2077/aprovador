@@ -1,55 +1,69 @@
 // packages/mobile/components/HistoryModal/index.tsx
-// VERSÃO COMPLETA COM DESTAQUE MIN/MAX E COMPARAÇÃO INDIVIDUAL
+// VERSÃO COMPLETA COM GRÁFICO DE BARRAS E LIMITE DE 6 MESES
 
 import { formatCurrency } from '@/constants/formatCurrency';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useMemo } from 'react';
-import { FlatList, ListRenderItemInfo, Modal, Text, View } from 'react-native'; // Adicionado StyleSheet, ListRenderItemInfo
-import { HistoryItem } from 'shared-types';
+import {
+  Dimensions,
+  FlatList,
+  ListRenderItemInfo,
+  Modal,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+import { BarChart } from 'react-native-chart-kit'; // Importa o BarChart
+import { HistoryItem as SharedHistoryItem } from 'shared-types';
 import Colors from '../../constants/Colors';
 import AppButton from '../AppButton';
 import styles from './HistoryModal.styles'; // Seus estilos locais
 
 // Interface para o item formatado INTERNAMENTE, incluindo destaque min/max
-interface DisplayHistoryItemInternal extends HistoryItem {
-  isMin?: boolean; // Flag para indicar se é o valor mínimo no histórico exibido
-  isMax?: boolean; // Flag para indicar se é o valor máximo no histórico exibido
+interface DisplayHistoryItemInternal extends SharedHistoryItem {
+  isMin?: boolean;
+  isMax?: boolean;
 }
 
 // Props que o Modal de Histórico realmente precisa
 interface HistoryModalProps {
   isVisible: boolean;
   payeeName: string;
-  historyData: HistoryItem[]; // Dados JÁ PROCESSADOS (sem o pagamento atual)
+  historyData: SharedHistoryItem[]; // Array COMPLETO de histórico aprovado para o payee (sem o atual)
   currentPaymentAmount: number;
   currentPaymentCurrency: string;
   onClose: () => void;
-  currentPaymentId: string;
+  // currentPaymentId foi removido das props pois historyData já deve vir filtrado
 }
 
-const AVERAGE_HISTORY_LIMIT = 6; // Limite para cálculo da média
+const MAX_ITEMS_FOR_DISPLAY_AND_AVERAGE = 6; // Máximo de itens para gráfico, lista e média
 
 export default function HistoryModal({
   isVisible,
   payeeName,
-  historyData,
+  historyData, // Este é o histórico COMPLETO (já ordenado mais recente primeiro)
   currentPaymentAmount,
   currentPaymentCurrency,
   onClose,
 }: HistoryModalProps) {
-  // Memo para calcular o sumário (média, comparação com atual)
+  // 1. Prepara os dados a serem exibidos (limitado a MAX_ITEMS_FOR_DISPLAY_AND_AVERAGE)
+  //    Estes dados serão usados para a lista, média e destaques min/max.
+  const displayedHistory = useMemo(() => {
+    return historyData.slice(0, MAX_ITEMS_FOR_DISPLAY_AND_AVERAGE);
+  }, [historyData]);
+
+  // 2. Calcula o sumário (média, etc.) baseado em displayedHistory
   const summaryStats = useMemo(() => {
-    if (!historyData || historyData.length === 0) {
+    if (!displayedHistory || displayedHistory.length === 0) {
       return {
         averageAmount: null,
-        comparisonText: 'Sem dados suficientes para comparação.',
+        comparisonText: 'Sem histórico suficiente para comparação.',
         comparisonColor: Colors.textMuted,
         comparisonIconName: null,
       };
     }
-    const recentHistory = historyData.slice(0, AVERAGE_HISTORY_LIMIT);
-    const sum = recentHistory.reduce((acc, item) => acc + item.rawAmount, 0);
-    const avg = sum / recentHistory.length;
+    const sum = displayedHistory.reduce((acc, item) => acc + item.rawAmount, 0);
+    const avg = sum / displayedHistory.length;
     const diff = ((currentPaymentAmount - avg) / avg) * 100;
 
     let text = '';
@@ -57,7 +71,6 @@ export default function HistoryModal({
     let iconName: keyof typeof Ionicons.glyphMap | null = null;
 
     if (isNaN(diff)) {
-      // Caso avg seja 0 ou currentPaymentAmount não seja número válido
       text = 'Não foi possível comparar.';
       color = Colors.textMuted;
     } else if (Math.abs(diff) < 5) {
@@ -66,11 +79,11 @@ export default function HistoryModal({
       iconName = 'remove-outline';
     } else if (diff > 0) {
       text = `${diff.toFixed(0)}% mais caro`;
-      color = Colors.dangerText;
+      color = Colors.error;
       iconName = 'arrow-up-circle-outline';
     } else {
       text = `${Math.abs(diff).toFixed(0)}% mais barato`;
-      color = Colors.successText;
+      color = Colors.success;
       iconName = 'arrow-down-circle-outline';
     }
     return {
@@ -79,18 +92,17 @@ export default function HistoryModal({
       comparisonColor: color,
       comparisonIconName: iconName,
     };
-  }, [historyData, currentPaymentAmount]);
+  }, [displayedHistory, currentPaymentAmount]);
 
-  // Memo para preparar dados da lista com DESTAQUES MIN/MAX
+  // 3. Prepara dados da LISTA com DESTAQUES MIN/MAX (baseado em displayedHistory)
   const listDataWithHighlights = useMemo((): DisplayHistoryItemInternal[] => {
-    if (!historyData || historyData.length === 0) return [];
-
+    if (!displayedHistory || displayedHistory.length === 0) return [];
     let minAmount = Infinity;
     let maxAmount = -Infinity;
     let minId: string | null = null;
     let maxId: string | null = null;
 
-    historyData.forEach((item) => {
+    displayedHistory.forEach((item) => {
       if (item.rawAmount < minAmount) {
         minAmount = item.rawAmount;
         minId = item.id;
@@ -100,39 +112,71 @@ export default function HistoryModal({
         maxId = item.id;
       }
     });
-
-    // Se min e max forem iguais (ex: só 1 item ou todos iguais), não destaca
-    if (minAmount === maxAmount && historyData.length > 1) {
+    if (minAmount === maxAmount && displayedHistory.length > 1) {
       minId = null;
       maxId = null;
     }
-    if (historyData.length <= 1) {
-      // Se só tem um item, não é nem min nem max relativo a outros
+    if (displayedHistory.length <= 1) {
       minId = null;
       maxId = null;
     }
-
-    return historyData.map((item) => ({
-      ...item, // Propriedades de HistoryItem (id, displayDate, formattedAmount, rawAmount, currency)
+    return displayedHistory.map((item) => ({
+      ...item,
       isMin: item.id === minId,
       isMax: item.id === maxId,
     }));
-  }, [historyData]);
+  }, [displayedHistory]);
 
-  // Função para renderizar cada item na FlatList
+  // 4. Prepara dados para o GRÁFICO (baseado em displayedHistory)
+  const chartData = useMemo(() => {
+    // Precisa de pelo menos 1 ponto para o gráfico de barras (algumas libs podem precisar de 2)
+    if (!displayedHistory || displayedHistory.length === 0) return null;
+    // Inverte para mostrar do mais antigo para o mais novo no gráfico
+    const dataForChart = [...displayedHistory].reverse();
+    return {
+      labels: dataForChart.map((item) => item.displayDate.substring(0, 5)), // "MM/AA"
+      datasets: [{ data: dataForChart.map((item) => item.rawAmount) }],
+    };
+  }, [displayedHistory]);
+
+  // Configuração do gráfico
+  const chartConfig = {
+    backgroundColor: Colors.card,
+    backgroundGradientFrom: Colors.card,
+    backgroundGradientTo: Colors.card,
+    decimalPlaces: 2,
+    color: (opacity = 1) => `rgba(187, 134, 252, ${opacity})`, // Colors.primary
+    labelColor: (opacity = 1) =>
+      Colors.text
+        ? Colors.text.replace('rgb', 'rgba').replace(')', `, ${opacity})`)
+        : `rgba(255, 255, 255, ${opacity})`,
+    style: { borderRadius: 8 },
+    propsForDots: { r: '3', strokeWidth: '1', stroke: Colors.primary },
+    barPercentage: displayedHistory.length > 3 ? 0.5 : 0.7, // Barras mais largas se poucos dados
+    propsForBackgroundLines: {
+      strokeDasharray: '',
+      stroke: Colors.border,
+      strokeWidth: 0.5,
+    }, // Linhas de fundo mais suaves
+  };
+  const screenWidth = Dimensions.get('window').width;
+  const horizontalModalContentPadding = styles.modalView.padding || 20;
+  const modalPadding = horizontalModalContentPadding * 2; // Total de padding horizontal (esquerda + direita)
+  const modalPaddingsTotal = horizontalModalContentPadding * 2;
+
+  const chartWidth = screenWidth * 0.9 - modalPaddingsTotal; // Ajuste 0.90 se seu modalView.width for diferente
+
   const renderHistoryItem = ({
     item,
   }: ListRenderItemInfo<DisplayHistoryItemInternal>) => {
-    // Comparação do item histórico com o pagamento ATUAL (LÓGICA QUE VOCÊ JÁ TINHA)
     let itemComparisonText = '';
     let itemComparisonColor = Colors.textMuted;
     let itemComparisonIcon: keyof typeof Ionicons.glyphMap | null = null;
-
     if (currentPaymentAmount && typeof item.rawAmount === 'number') {
       const diff =
         ((item.rawAmount - currentPaymentAmount) / currentPaymentAmount) * 100;
       if (isNaN(diff)) {
-        itemComparisonText = '-'; // Não pode comparar
+        itemComparisonText = '-';
       } else if (Math.abs(diff) < 5) {
         itemComparisonText = `~ ${diff.toFixed(0)}%`;
         itemComparisonIcon = 'remove-circle-outline';
@@ -140,30 +184,24 @@ export default function HistoryModal({
       } else if (item.rawAmount > currentPaymentAmount) {
         itemComparisonText = `↑ ${diff.toFixed(0)}%`;
         itemComparisonIcon = 'arrow-up-circle-outline';
-        itemComparisonColor = Colors.dangerText;
+        itemComparisonColor = Colors.error;
       } else {
         itemComparisonText = `↓ ${Math.abs(diff).toFixed(0)}%`;
         itemComparisonIcon = 'arrow-down-circle-outline';
-        itemComparisonColor = Colors.successText;
+        itemComparisonColor = Colors.success;
       }
     }
-
-    // Define o estilo do valor baseado se é min ou max no histórico
     let amountSpecificStyle = {};
-    if (item.isMin) amountSpecificStyle = styles.minAmountText; // Só min
-    if (item.isMax) amountSpecificStyle = styles.maxAmountText; // Só max (sobrescreve min se for o mesmo item)
-    // Se min e max forem o mesmo valor e não quisermos destacar, a lógica do useMemo acima já trata isso.
-
+    if (item.isMin) amountSpecificStyle = styles.minAmountText;
+    if (item.isMax) amountSpecificStyle = styles.maxAmountText;
     return (
       <View style={styles.historyListItem}>
         <View style={styles.historyItemMain}>
           <Text style={styles.historyDate}>{item.displayDate}</Text>
-          {/* Aplica o estilo de destaque ao valor do item da lista */}
           <Text style={[styles.historyAmount, amountSpecificStyle]}>
             {item.formattedAmount}
           </Text>
         </View>
-        {/* Mostra a comparação individual com o pagamento ATUAL */}
         {itemComparisonText && (
           <View style={styles.itemComparisonContainer}>
             {itemComparisonIcon && (
@@ -196,70 +234,94 @@ export default function HistoryModal({
       onRequestClose={onClose}
     >
       <View style={styles.modalCenteredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>Histórico para: {payeeName}</Text>
-
-          {/* Seção de Sumário (média e comparação com atual) */}
-          <View style={styles.summaryContainer}>
-            <Text style={styles.summaryText}>
-              Pagamento Atual:{' '}
-              {formatCurrency(currentPaymentAmount, currentPaymentCurrency)}
-            </Text>
-            {summaryStats.averageAmount !== null && (
+        {/* ScrollView para o conteúdo do modal se exceder a altura máxima */}
+        <ScrollView contentContainerStyle={styles.modalScrollViewContent}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Histórico para: {payeeName}</Text>
+            {/* Seção de Sumário */}
+            <View style={styles.summaryContainer}>
               <Text style={styles.summaryText}>
-                Média dos últimos{' '}
-                {Math.min(historyData.length, AVERAGE_HISTORY_LIMIT)}:{' '}
-                {formatCurrency(
-                  summaryStats.averageAmount,
-                  currentPaymentCurrency
+                Pagamento Atual:{' '}
+                {formatCurrency(currentPaymentAmount, currentPaymentCurrency)}
+              </Text>
+              {summaryStats.averageAmount !== null && (
+                <Text style={styles.summaryText}>
+                  Média dos últimos {displayedHistory.length}:{' '}
+                  {formatCurrency(
+                    summaryStats.averageAmount,
+                    currentPaymentCurrency
+                  )}
+                </Text>
+              )}
+              <View style={styles.comparisonLine}>
+                {summaryStats.comparisonIconName && (
+                  <Ionicons
+                    name={summaryStats.comparisonIconName}
+                    size={18}
+                    color={summaryStats.comparisonColor}
+                    style={styles.comparisonIcon}
+                  />
                 )}
+                <Text
+                  style={[
+                    styles.summaryText,
+                    styles.comparisonText,
+                    { color: summaryStats.comparisonColor },
+                  ]}
+                >
+                  {summaryStats.comparisonText}
+                </Text>
+              </View>
+            </View>
+
+            {/* GRÁFICO */}
+            {chartData && chartData.labels.length > 0 && (
+              <View style={styles.chartContainer}>
+                <Text style={styles.chartTitle}>
+                  Valores (Últimos {chartData.labels.length}{' '}
+                  {chartData.labels.length === 1 ? 'Pag.' : 'Pag.'})
+                </Text>
+                <BarChart
+                  data={chartData}
+                  width={chartWidth}
+                  height={200}
+                  yAxisLabel={currentPaymentCurrency === 'BRL' ? 'R$ ' : '$ '}
+                  chartConfig={chartConfig}
+                  verticalLabelRotation={displayedHistory.length > 4 ? 25 : 0}
+                  fromZero={true}
+                  style={styles.chartStyle}
+                  showValuesOnTopOfBars={true}
+                  // withHorizontalLabels={displayedHistory.length < 5} // Opcional
+                />
+              </View>
+            )}
+
+            {/* Lista de Histórico */}
+            {listDataWithHighlights && listDataWithHighlights.length > 0 ? (
+              <View style={styles.historyListContainer}>
+                <Text style={styles.listTitle}>
+                  Pagamentos Detalhados (Últimos {listDataWithHighlights.length}
+                  )
+                </Text>
+                <FlatList<DisplayHistoryItemInternal>
+                  data={listDataWithHighlights}
+                  renderItem={renderHistoryItem}
+                  keyExtractor={(item) => item.id}
+                  scrollEnabled={false} // Scroll já é tratado pelo ScrollView do Modal
+                />
+              </View>
+            ) : (
+              <Text style={styles.historyEmptyText}>
+                Nenhum histórico de pagamento aprovado encontrado.
               </Text>
             )}
-            <View style={styles.comparisonLine}>
-              {summaryStats.comparisonIconName && (
-                <Ionicons
-                  name={summaryStats.comparisonIconName}
-                  size={18}
-                  color={summaryStats.comparisonColor}
-                  style={styles.comparisonIcon}
-                />
-              )}
-              <Text
-                style={[
-                  styles.summaryText,
-                  styles.comparisonText,
-                  { color: summaryStats.comparisonColor },
-                ]}
-              >
-                {summaryStats.comparisonText}
-              </Text>
+
+            {/* Botão Fechar */}
+            <View style={styles.closeButtonContainer}>
+              <AppButton title='Fechar' onPress={onClose} variant='primary' />
             </View>
           </View>
-
-          {/* Lista de Histórico com Destaques Min/Max */}
-          {listDataWithHighlights && listDataWithHighlights.length > 0 ? (
-            <View style={styles.historyListContainer}>
-              <FlatList<DisplayHistoryItemInternal> // Especifica o tipo do item
-                data={listDataWithHighlights} // Usa os dados com flags min/max
-                renderItem={renderHistoryItem}
-                keyExtractor={(item) => item.id}
-              />
-            </View>
-          ) : (
-            <Text style={styles.historyEmptyText}>
-              Nenhum histórico de pagamento aprovado encontrado.
-            </Text>
-          )}
-
-          {/* Botão Fechar */}
-          <View style={styles.closeButtonContainer}>
-            <AppButton
-              title='Fechar'
-              onPress={onClose}
-              variant='primary' // Fundo amarelo, texto escuro
-            />
-          </View>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );

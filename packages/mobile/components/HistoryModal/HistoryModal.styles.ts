@@ -7,17 +7,28 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalScrollViewContent: {
+    // Para o ScrollView que envolve o modalView
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20, // Espaço para o modal "respirar" no scroll
   },
   modalView: {
-    width: '90%',
-    maxWidth: 500,
-    maxHeight: '80%',
-    margin: 20,
+    width: '92%',
+    maxWidth: 600,
+    // Removido maxHeight para o ScrollView controlar
+    marginVertical: 20, // Margem vertical se o conteúdo for menor que a tela
     backgroundColor: Colors.card,
     borderRadius: 12,
-    padding: 25,
+    padding: 20, // Padding interno do card do modal
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
     elevation: 5,
   },
   modalTitle: {
@@ -27,20 +38,49 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.text,
   },
-
   summaryContainer: {
     width: '100%',
-    padding: 10,
+    padding: 12,
     backgroundColor: Colors.inputBackground,
-    borderRadius: 6,
+    borderRadius: 8,
     marginBottom: 15,
   },
-  summaryText: { fontSize: 16, color: Colors.textSecondary, marginBottom: 4 },
-  comparisonLine: { flexDirection: 'row', alignItems: 'center', marginTop: 5 },
-  comparisonIcon: { marginRight: 5 },
-  comparisonText: { fontSize: 15, fontWeight: 'bold' }, // Cor é aplicada inline
+  summaryText: { fontSize: 14, color: Colors.textSecondary, marginBottom: 5 },
+  comparisonLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 5,
+  },
+  comparisonIcon: { marginRight: 6 },
+  comparisonText: { fontSize: 15, fontWeight: 'bold' },
 
-  historyListContainer: { width: '100%', flexShrink: 1, marginTop: 0 }, // Removi marginTop
+  chartContainer: {
+    alignItems: 'center',
+    marginBottom: 15,
+    width: '100%',
+    // paddingHorizontal: 5, // Padding para o gráfico não colar nas bordas do container
+  },
+  chartTitle: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  chartStyle: {
+    borderRadius: 8,
+    // Ajuste o paddingRight aqui se os valores/labels estiverem cortados
+    paddingRight: 35, // Espaço para os valores nas barras
+  },
+
+  historyListContainer: { width: '100%', marginTop: 10, marginBottom: 15 }, // Adicionado marginBottom
+  listTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
   historyListItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -55,11 +95,11 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginRight: 5,
-  }, // Adicionado marginRight
+  },
   historyDate: { fontSize: 15, color: Colors.textSecondary },
   historyAmount: { fontSize: 15, fontWeight: 'bold', color: Colors.text },
-  minAmountText: { color: Colors.successText, fontWeight: 'bold' }, // Para destacar o menor valor
-  maxAmountText: { color: Colors.dangerText, fontWeight: 'bold' }, // Para destacar o maior valor
+  minAmountText: { color: Colors.success, fontWeight: 'bold' },
+  maxAmountText: { color: Colors.error, fontWeight: 'bold' },
   itemComparisonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -76,10 +116,5 @@ export default StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-  closeButtonContainer: {
-    width: '100%',
-    height: 50,
-    marginTop: 20,
-    color: Colors.text,
-  },
+  closeButtonContainer: { width: '60%', marginTop: 20, alignSelf: 'center' },
 });
