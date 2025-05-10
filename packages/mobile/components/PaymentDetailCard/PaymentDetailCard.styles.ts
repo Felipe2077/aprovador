@@ -15,7 +15,6 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     width: '100%', // Garante que o container ocupe a largura
-    marginBottom: 10, // Aumentei um pouco o espaço
   },
   detailItem: {
     flexDirection: 'row',
@@ -24,7 +23,7 @@ export default StyleSheet.create({
     paddingVertical: 10, // Reduzi um pouco para ficar menos espaçado dentro do card
   },
   icon: {
-    fontSize: 24,
+    fontSize: 16,
   },
   labelContainer: {
     flexDirection: 'row',

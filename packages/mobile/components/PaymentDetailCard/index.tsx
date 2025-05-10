@@ -39,17 +39,7 @@ export default function PaymentDetailCard({
     <View style={styles.cardContainer}>
       {/* Container para o botão de histórico, alinhado à direita */}
       {/* SÓ RENDERIZA O BOTÃO SE 'onViewPayeeHistory' FOR FORNECIDO */}
-      {onViewPayeeHistory && (
-        <View style={styles.cardHeaderActions}>
-          <AppButton
-            title='Histórico de pagamentos'
-            onPress={onViewPayeeHistory} // Agora TS sabe que é uma função
-            variant='link'
-            iconLeft={<Text style={styles.icon}>🕒</Text>}
-            style={{ backgroundColor: Colors.background }}
-          />
-        </View>
-      )}
+
       {/* Item Recebedor */}
       <View style={styles.detailItem}>
         <View style={styles.labelContainer}>
@@ -164,6 +154,21 @@ export default function PaymentDetailCard({
       )}
 
       {/* Adicione outros campos se necessário (createdAt, etc.) */}
+      {onViewPayeeHistory && (
+        <View style={styles.cardHeaderActions}>
+          <AppButton
+            title=''
+            onPress={onViewPayeeHistory} // Agora TS sabe que é uma função
+            variant='link'
+            iconLeft={
+              <Text style={{ color: '#1d7dea', fontSize: 18 }}>
+                🕒 Histórico de pagamentos
+              </Text>
+            }
+            style={{ backgroundColor: 'transparent' }}
+          />
+        </View>
+      )}
     </View>
   );
 }

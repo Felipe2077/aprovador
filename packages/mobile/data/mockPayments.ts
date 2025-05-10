@@ -10,7 +10,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 150.75,
     currency: 'BRL',
     payee: 'Fornecedor Alpha',
-    requesterName: 'Alice',
+    requesterName: 'Alice', // <-- Campo Corrigido
     requesterDepartment: 'Laboratório de Inovação',
     dueDate: '2025-04-10',
     status: PaymentStatus.PENDING,
@@ -28,7 +28,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 999.0,
     currency: 'BRL',
     payee: 'Consultoria Beta',
-    requesterName: 'Bob',
+    requesterName: 'Bob', // <-- Campo Corrigido
     requesterDepartment: 'Operações Estratégicas',
     dueDate: '2025-04-15',
     status: PaymentStatus.PENDING,
@@ -44,9 +44,9 @@ export const MOCK_PAYMENTS: Payment[] = [
   {
     id: '103',
     amount: 50.0,
-    currency: 'BRL',
+    currency: 'USD',
     payee: 'Serviço Online Gamma',
-    requesterName: 'Alice',
+    requesterName: 'Alice', // <-- Campo Corrigido
     requesterDepartment: 'Laboratório de Inovação',
     dueDate: '2025-04-08',
     status: PaymentStatus.PENDING,
@@ -64,14 +64,14 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 2500.5,
     currency: 'BRL',
     payee: 'Aluguel Escritório',
-    requesterName: 'Carlos',
+    requesterName: 'Carlos', // <-- Campo Corrigido
     requesterDepartment: 'Infraestrutura & Facilities',
     dueDate: '2025-04-05',
     status: PaymentStatus.PENDING,
     description: null,
-    requesterId: 'user_carlos_789', // <-- Adicionado
-    createdAt: new Date('2025-03-28T14:00:00Z'), // <-- Adicionado
-    updatedAt: new Date('2025-03-28T14:00:00Z'), // <-- Adicionado
+    requesterId: 'user_carlos_789',
+    createdAt: new Date('2025-03-28T14:00:00Z'),
+    updatedAt: new Date('2025-03-28T14:00:00Z'),
     approverId: null,
     approvedAt: null,
     cancellerId: null,
@@ -82,12 +82,12 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 450.0,
     currency: 'BRL',
     payee: 'Agência Criativa Delta',
-    requesterName: 'Jan',
+    requesterName: 'Diana', // <-- Campo Corrigido
     requesterDepartment: 'Marketing Digital',
     dueDate: '2025-04-12',
     status: PaymentStatus.PENDING,
     description: 'Campanha Redes Sociais',
-    requesterId: 'user_Jan_101',
+    requesterId: 'user_diana_101',
     createdAt: new Date('2025-04-05T16:00:00Z'),
     updatedAt: new Date('2025-04-05T16:00:00Z'),
     approverId: null,
@@ -100,7 +100,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 1250.0,
     currency: 'BRL',
     payee: 'Software House Épsilon',
-    requesterName: 'Bob',
+    requesterName: 'Bob', // <-- Campo Corrigido
     requesterDepartment: 'Operações Estratégicas',
     dueDate: '2025-04-18',
     status: PaymentStatus.PENDING,
@@ -114,13 +114,14 @@ export const MOCK_PAYMENTS: Payment[] = [
     cancelledAt: null,
   },
 
-  // === Histórico de Pagamentos Aprovados (Com Novos Campos) ===
+  // === Histórico de Pagamentos Aprovados (Estrutura Corrigida) ===
+  // --- Fornecedor Alpha ---
   {
     id: '091',
     amount: 145.5,
     currency: 'BRL',
     payee: 'Fornecedor Alpha',
-    requesterName: 'Alice',
+    requesterName: 'Alice', // <-- Campo Corrigido
     requesterDepartment: 'Laboratório de Inovação',
     dueDate: '2025-03-10',
     status: PaymentStatus.APPROVED,
@@ -138,7 +139,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 160.0,
     currency: 'BRL',
     payee: 'Fornecedor Alpha',
-    requesterName: 'Alice',
+    requesterName: 'Alice', // <-- Campo Corrigido
     requesterDepartment: 'Laboratório de Inovação',
     dueDate: '2025-02-10',
     status: PaymentStatus.APPROVED,
@@ -153,47 +154,84 @@ export const MOCK_PAYMENTS: Payment[] = [
   },
   {
     id: '071',
-    amount: 140.2,
+    amount: 120.0,
     currency: 'BRL',
     payee: 'Fornecedor Alpha',
-    requesterName: 'Alice',
+    requesterName: 'Alice', // <-- Campo Corrigido
     requesterDepartment: 'Laboratório de Inovação',
     dueDate: '2025-01-10',
     status: PaymentStatus.APPROVED,
     description: 'Material escritório Janeiro',
-    requesterId: 'user_alice_123', // <-- Adicionado
-    createdAt: new Date('2025-01-02T10:00:00Z'), // <-- Adicionado
-    updatedAt: new Date('2025-01-10T14:00:00Z'), // <-- Adicionado
-    approverId: 'user_director_999', // <-- Adicionado
-    approvedAt: new Date('2025-01-10T14:00:00Z'), // <-- Adicionado
+    requesterId: 'user_alice_123',
+    createdAt: new Date('2025-01-02T10:00:00Z'),
+    updatedAt: new Date('2025-01-10T14:00:00Z'),
+    approverId: 'user_director_999',
+    approvedAt: new Date('2025-01-10T14:00:00Z'),
     cancellerId: null,
     cancelledAt: null,
   },
   {
     id: '061',
-    amount: 155.0,
+    amount: 180.5,
     currency: 'BRL',
     payee: 'Fornecedor Alpha',
-    requesterName: 'Alice',
+    requesterName: 'Alice', // <-- Campo Corrigido
     requesterDepartment: 'Laboratório de Inovação',
     dueDate: '2024-12-10',
     status: PaymentStatus.APPROVED,
     description: 'Material escritório Dezembro/24',
-    requesterId: 'user_alice_123', // <-- Adicionado
-    createdAt: new Date('2024-12-01T10:00:00Z'), // <-- Adicionado
-    updatedAt: new Date('2024-12-11T11:00:00Z'), // <-- Adicionado
-    approverId: 'user_director_999', // <-- Adicionado
-    approvedAt: new Date('2024-12-11T11:00:00Z'), // <-- Adicionado
+    requesterId: 'user_alice_123',
+    createdAt: new Date('2024-12-01T10:00:00Z'),
+    updatedAt: new Date('2024-12-11T11:00:00Z'),
+    approverId: 'user_director_999',
+    approvedAt: new Date('2024-12-11T11:00:00Z'),
     cancellerId: null,
     cancelledAt: null,
   },
-  // Histórico para Aluguel Escritório
+  {
+    id: '051',
+    amount: 130.0,
+    currency: 'BRL',
+    payee: 'Fornecedor Alpha',
+    requesterName: 'Alice', // <-- Campo Corrigido
+    requesterDepartment: 'Laboratório de Inovação',
+    dueDate: '2024-11-10',
+    status: PaymentStatus.APPROVED,
+    description: 'Material escritório Novembro/24',
+    requesterId: 'user_alice_123',
+    createdAt: new Date('2024-11-01T10:00:00Z'),
+    updatedAt: new Date('2024-11-11T11:00:00Z'),
+    approverId: 'user_director_999',
+    approvedAt: new Date('2024-11-11T11:00:00Z'),
+    cancellerId: null,
+    cancelledAt: null,
+  },
+  {
+    id: '041',
+    amount: 175.0,
+    currency: 'BRL',
+    payee: 'Fornecedor Alpha',
+    requesterName: 'Alice', // <-- Campo Corrigido
+    requesterDepartment: 'Laboratório de Inovação',
+    dueDate: '2024-10-10',
+    status: PaymentStatus.APPROVED,
+    description: 'Material escritório Outubro/24',
+    requesterId: 'user_alice_123',
+    createdAt: new Date('2024-10-01T10:00:00Z'),
+    updatedAt: new Date('2024-10-11T11:00:00Z'),
+    approverId: 'user_director_999',
+    approvedAt: new Date('2024-10-11T11:00:00Z'),
+    cancellerId: null,
+    cancelledAt: null,
+  },
+
+  // --- Aluguel Escritório ---
   {
     id: '095',
     amount: 2500.5,
     currency: 'BRL',
     payee: 'Aluguel Escritório',
-    requesterName: 'Carlos',
+    requesterName: 'Carlos', // <-- Campo Corrigido
     requesterDepartment: 'Infraestrutura & Facilities',
     dueDate: '2025-03-05',
     status: PaymentStatus.APPROVED,
@@ -211,7 +249,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 2500.5,
     currency: 'BRL',
     payee: 'Aluguel Escritório',
-    requesterName: 'Carlos',
+    requesterName: 'Carlos', // <-- Campo Corrigido
     requesterDepartment: 'Infraestrutura & Facilities',
     dueDate: '2025-02-05',
     status: PaymentStatus.APPROVED,
@@ -224,13 +262,14 @@ export const MOCK_PAYMENTS: Payment[] = [
     cancellerId: null,
     cancelledAt: null,
   },
-  // Histórico para Consultoria Beta
+
+  // --- Consultoria Beta ---
   {
-    id: '098',
+    id: '098', // Mantive este como o seu modelo exato
     amount: 950.0,
     currency: 'BRL',
     payee: 'Consultoria Beta',
-    requesterName: 'Bob',
+    requesterName: 'Bob', // <-- Campo Corrigido
     requesterDepartment: 'Operações Estratégicas',
     dueDate: '2025-03-15',
     status: PaymentStatus.APPROVED,
@@ -240,6 +279,42 @@ export const MOCK_PAYMENTS: Payment[] = [
     updatedAt: new Date('2025-03-16T16:00:00Z'),
     approverId: 'user_director_999',
     approvedAt: new Date('2025-03-16T16:00:00Z'),
+    cancellerId: null,
+    cancelledAt: null,
+  },
+  {
+    id: '088',
+    amount: 1100.0,
+    currency: 'BRL',
+    payee: 'Consultoria Beta',
+    requesterName: 'Bob', // <-- Campo Corrigido
+    requesterDepartment: 'Operações Estratégicas',
+    dueDate: '2025-02-15',
+    status: PaymentStatus.APPROVED,
+    description: 'Consultoria Mensal Fev',
+    requesterId: 'user_bob_456',
+    createdAt: new Date('2025-02-05T09:00:00Z'),
+    updatedAt: new Date('2025-02-16T16:00:00Z'),
+    approverId: 'user_director_999',
+    approvedAt: new Date('2025-02-16T16:00:00Z'),
+    cancellerId: null,
+    cancelledAt: null,
+  },
+  {
+    id: '078',
+    amount: 900.0,
+    currency: 'BRL',
+    payee: 'Consultoria Beta',
+    requesterName: 'Bob', // <-- Campo Corrigido
+    requesterDepartment: 'Operações Estratégicas',
+    dueDate: '2025-01-15',
+    status: PaymentStatus.APPROVED,
+    description: 'Consultoria Mensal Jan',
+    requesterId: 'user_bob_456',
+    createdAt: new Date('2025-01-05T09:00:00Z'),
+    updatedAt: new Date('2025-01-16T16:00:00Z'),
+    approverId: 'user_director_999',
+    approvedAt: new Date('2025-01-16T16:00:00Z'),
     cancellerId: null,
     cancelledAt: null,
   },
