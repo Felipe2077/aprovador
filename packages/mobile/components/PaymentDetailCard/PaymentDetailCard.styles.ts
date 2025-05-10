@@ -12,16 +12,19 @@ export default StyleSheet.create({
     borderRadius: 8, // Bordas arredondadas
   },
   cardHeaderActions: {
-    // NOVO ESTILO
-    flexDirection: 'row', // Para alinhar itens na horizontal
-    justifyContent: 'flex-end', // Empurra o botão para a DIREITA
-    marginBottom: 5, // Pequeno espaço antes dos detalhes
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%', // Garante que o container ocupe a largura
+    marginBottom: 10, // Aumentei um pouco o espaço
   },
   detailItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 10, // Reduzi um pouco para ficar menos espaçado dentro do card
+  },
+  icon: {
+    fontSize: 24,
   },
   labelContainer: {
     flexDirection: 'row',
@@ -62,6 +65,6 @@ export default StyleSheet.create({
   },
   amountValue: {
     fontWeight: 'bold',
-    color: Colors.primary, // Cor de destaque para o valor
+    color: Colors.successText, // Cor de destaque para o valor
   },
 });

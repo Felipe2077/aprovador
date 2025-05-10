@@ -1,5 +1,5 @@
 // packages/mobile/components/PaymentDetailCard/index.tsx
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Payment } from 'shared-types'; // Importe tipos do pacote compartilhado
@@ -42,12 +42,11 @@ export default function PaymentDetailCard({
       {onViewPayeeHistory && (
         <View style={styles.cardHeaderActions}>
           <AppButton
-            title='Histórico'
+            title='Histórico de pagamentos'
             onPress={onViewPayeeHistory} // Agora TS sabe que é uma função
             variant='link'
-            iconLeft={
-              <FontAwesome name='history' size={16} color={Colors.primary} />
-            }
+            iconLeft={<Text style={styles.icon}>🕒</Text>}
+            style={{ backgroundColor: Colors.background }}
           />
         </View>
       )}
