@@ -168,10 +168,6 @@ export default function PaymentDetailScreen() {
   // --- Handler para abrir e PREPARAR DADOS do MODAL DE HISTÓRICO DE PAGAMENTOS DO FAVORECIDO ---
   const handleOpenPayeeHistoryModal = useCallback(() => {
     if (!paymentDetails) return;
-
-    console.log(
-      `[handleOpenPayeeHistoryModal] Abrindo histórico para payee: ${paymentDetails.payee}`
-    );
     const history = allPaymentsFromStore
       .filter(
         (p) =>
@@ -185,19 +181,19 @@ export default function PaymentDetailScreen() {
           new Date(a.dueDate || a.createdAt).getTime()
       )
       .map((p) => ({
-        // Mapeia para a estrutura HistoryItem de shared-types
         id: p.id,
         displayDate: new Intl.DateTimeFormat('pt-BR', {
           month: '2-digit',
           year: 'numeric',
         }).format(new Date(p.dueDate || p.createdAt)),
         formattedAmount: formatCurrency(p.amount, p.currency),
+        rawAmount: p.amount, // <-- ADICIONADO
+        currency: p.currency, // <-- ADICIONADO
       }));
+    setPaymentHistoryForModal(history);
+    setIsPayeeHistoryModalVisible(true);
+  }, [paymentDetails, allPaymentsFromStore, formatCurrency]); // Adicione formatCurrency se for uma dep
 
-    console.log('[handleOpenPayeeHistoryModal] Histórico formatado:', history);
-    setPaymentHistoryForModal(history); // Define os dados formatados para o estado
-    setIsPayeeHistoryModalVisible(true); // Abre o modal
-  }, [paymentDetails, allPaymentsFromStore, formatCurrency]); // Adicionado formatCurrency
   // -----------------------------------------------------------------------------------
 
   // --- Componentes das Cenas das Abas ---
@@ -362,6 +358,8 @@ export default function PaymentDetailScreen() {
           payeeName={paymentDetails.payee}
           currentPaymentId={paymentDetails.id} // Passa o ID atual
           historyData={paymentHistoryForModal} // Passa os dados FORMATADOS pelo handler
+          currentPaymentAmount={paymentDetails.amount}
+          currentPaymentCurrency={paymentDetails.currency}
         />
       )}
     </KeyboardAvoidingView>

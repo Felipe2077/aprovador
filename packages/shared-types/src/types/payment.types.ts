@@ -35,4 +35,6 @@ export interface HistoryItem {
   id: string;
   displayDate: string;
   formattedAmount: string;
+  rawAmount: number; //  Valor numérico para cálculos
+  currency: string; //  Moeda para referência
 }

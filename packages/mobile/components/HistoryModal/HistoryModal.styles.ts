@@ -70,4 +70,22 @@ export default StyleSheet.create({
     width: '100%',
     flexShrink: 1, // Permite encolher se necessário dentro do maxHeight
   },
+  summaryContainer: {
+    width: '100%',
+    padding: 10,
+    backgroundColor: Colors.inputBackground, // Um fundo sutil
+    borderRadius: 6,
+    marginBottom: 20, // Espaço antes da lista
+  },
+  summaryText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    marginBottom: 4,
+  },
+  comparisonText: {
+    //Para o texto com cor e percentual
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginTop: 5,
+  },
 });
