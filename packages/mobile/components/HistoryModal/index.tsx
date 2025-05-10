@@ -11,6 +11,7 @@ interface HistoryModalProps {
   payeeName: string; // Para o título
   historyData: HistoryItem[]; // Os dados já processados
   onClose: () => void; // Função para fechar o modal
+  currentPaymentId: string;
   // isLoadingHistory?: boolean; // Poderia receber um estado de loading
 }
 
@@ -18,9 +19,9 @@ export default function HistoryModal({
   isVisible,
   payeeName,
   historyData,
+  currentPaymentId,
   onClose,
-}: // isLoadingHistory = false, // Descomente se usar loading
-HistoryModalProps) {
+}: HistoryModalProps) {
   // Função para renderizar cada item na FlatList
   const renderHistoryItem = ({ item }: { item: HistoryItem }) => (
     <View style={styles.historyListItem}>
@@ -39,8 +40,6 @@ HistoryModalProps) {
       <View style={styles.modalCenteredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalTitle}>Histórico para: {payeeName}</Text>
-
-          {/* TODO: Adicionar ActivityIndicator se isLoadingHistory for true */}
 
           {/* Lista de Histórico ou Mensagem de Vazio */}
           {historyData.length > 0 ? (

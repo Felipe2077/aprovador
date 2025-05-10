@@ -1,10 +1,11 @@
 // packages/mobile/components/PaymentDetailCard/index.tsx
-import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Payment } from 'shared-types'; // Importe tipos do pacote compartilhado
 import Colors from '../../constants/Colors'; // Importe Cores
 import { formatCurrency } from '../../constants/formatCurrency'; // Ou de utils (VERIFICAR CAMINHO)
+import AppButton from '../AppButton';
 import styles from './PaymentDetailCard.styles'; // Importe estilos locais
 
 // Helper de data (pode mover para utils/formatters.ts depois)
@@ -27,11 +28,29 @@ const formatDisplayDate = (date: Date | string | null | undefined): string => {
 
 interface PaymentDetailCardProps {
   payment: Payment; // Recebe o objeto de pagamento completo
+  onViewPayeeHistory?: () => void;
 }
 
-export default function PaymentDetailCard({ payment }: PaymentDetailCardProps) {
+export default function PaymentDetailCard({
+  payment,
+  onViewPayeeHistory,
+}: PaymentDetailCardProps) {
   return (
     <View style={styles.cardContainer}>
+      {/* Container para o botão de histórico, alinhado à direita */}
+      {/* SÓ RENDERIZA O BOTÃO SE 'onViewPayeeHistory' FOR FORNECIDO */}
+      {onViewPayeeHistory && (
+        <View style={styles.cardHeaderActions}>
+          <AppButton
+            title='Histórico'
+            onPress={onViewPayeeHistory} // Agora TS sabe que é uma função
+            variant='link'
+            iconLeft={
+              <FontAwesome name='history' size={16} color={Colors.primary} />
+            }
+          />
+        </View>
+      )}
       {/* Item Recebedor */}
       <View style={styles.detailItem}>
         <View style={styles.labelContainer}>
@@ -41,9 +60,14 @@ export default function PaymentDetailCard({ payment }: PaymentDetailCardProps) {
             color={Colors.textSecondary}
             style={styles.labelIcon}
           />
-          <Text style={styles.label}>Recebedor:</Text>
+          <Text style={styles.label}>Favorecido:</Text>
         </View>
-        <Text style={styles.value}>{payment.payee}</Text>
+        {/* Torna o valor clicável se a função for passada */}
+        {onViewPayeeHistory && (
+          <Text style={styles.value} numberOfLines={1} ellipsizeMode='tail'>
+            {payment.payee}
+          </Text>
+        )}
       </View>
 
       {/* Item Valor */}

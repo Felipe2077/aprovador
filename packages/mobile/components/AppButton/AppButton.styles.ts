@@ -12,6 +12,7 @@ const variantTextColors = {
   muted: Colors.text,
   default: Colors.text,
   neutral: Colors.background,
+  link: Colors.primary,
 };
 type VariantTextColorKeys = keyof typeof variantTextColors;
 
@@ -35,6 +36,15 @@ export default StyleSheet.create({
   iconWrapper: {
     marginRight: 8, // Espaço entre ícone e texto
   },
+  containerLink: {
+    backgroundColor: 'transparent', // Fundo transparente
+    paddingVertical: 6, // Padding menor para um look mais sutil
+    paddingHorizontal: 8,
+    flex: undefined, // Remove o flex: 1 do estilo base
+    flexGrow: 0, // Não permite crescer
+    flexShrink: 1, // Permite encolher se necessário
+    // Não precisa de minWidth ou marginHorizontal aqui, pois será um botão pequeno
+  },
 
   // --- Estilos das Variantes (Background) ---
   containerPrimary: { backgroundColor: Colors.primary },
@@ -53,6 +63,7 @@ export default StyleSheet.create({
   textMuted: { color: variantTextColors.muted },
   textDefault: { color: variantTextColors.default },
   textNeutral: { color: variantTextColors.neutral },
+  textLink: { color: variantTextColors.link },
 
   // --- Estilo para estado Desabilitado/Loading ---
   disabled: {
@@ -64,8 +75,5 @@ export default StyleSheet.create({
 export function getTextColorForVariant(
   variant: VariantTextColorKeys = 'default'
 ): string {
-  // Agora o TypeScript sabe que 'variant' SÓ PODE ser 'primary', 'success', etc.
-  // O acesso variantTextColors[variant] é seguro.
-  // O fallback || ainda é bom por segurança extra, mas tecnicamente menos necessário.
   return variantTextColors[variant] || variantTextColors.default;
 }

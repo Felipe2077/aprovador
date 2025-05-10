@@ -21,7 +21,8 @@ type ButtonVariant =
   | 'warning'
   | 'muted'
   | 'default'
-  | 'neutral';
+  | 'neutral'
+  | 'link';
 
 // Props que o componente aceita
 interface AppButtonProps {

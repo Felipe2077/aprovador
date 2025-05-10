@@ -11,6 +11,12 @@ export default StyleSheet.create({
     borderColor: Colors.border, // Cor da borda
     borderRadius: 8, // Bordas arredondadas
   },
+  cardHeaderActions: {
+    // NOVO ESTILO
+    flexDirection: 'row', // Para alinhar itens na horizontal
+    justifyContent: 'flex-end', // Empurra o botão para a DIREITA
+    marginBottom: 5, // Pequeno espaço antes dos detalhes
+  },
   detailItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -36,6 +42,23 @@ export default StyleSheet.create({
     color: Colors.text,
     flexShrink: 1,
     textAlign: 'right',
+  },
+  payeeValueContainer: {
+    //  Container para o nome do favorecido e o ícone
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end', // Alinha à direita dentro do espaço disponível
+    flexShrink: 1,
+  },
+  payeeText: {
+    //  Estilo para o texto do nome do favorecido
+    fontSize: 15,
+    color: Colors.text, // Ou Colors.link se quiser que pareça mais clicável
+    // Não precisa de textAlign: 'right' aqui, o container cuida
+  },
+  historyIcon: {
+    //: Estilo para o ícone de histórico
+    marginLeft: 8, // Espaço entre o nome e o ícone
   },
   amountValue: {
     fontWeight: 'bold',
