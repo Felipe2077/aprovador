@@ -18,9 +18,9 @@ export default StyleSheet.create({
   },
   modalView: {
     width: '92%',
-    maxWidth: 600,
+    maxWidth: 400,
     // Removido maxHeight para o ScrollView controlar
-    marginVertical: 20, // Margem vertical se o conteúdo for menor que a tela
+    marginVertical: 10, // Margem vertical se o conteúdo for menor que a tela
     backgroundColor: Colors.card,
     borderRadius: 12,
     padding: 20, // Padding interno do card do modal
@@ -56,9 +56,7 @@ export default StyleSheet.create({
   comparisonText: { fontSize: 15, fontWeight: 'bold' },
 
   chartContainer: {
-    alignItems: 'center',
     marginBottom: 15,
-    width: '100%',
     // paddingHorizontal: 5, // Padding para o gráfico não colar nas bordas do container
   },
   chartTitle: {
@@ -69,8 +67,6 @@ export default StyleSheet.create({
   },
   chartStyle: {
     borderRadius: 8,
-    // Ajuste o paddingRight aqui se os valores/labels estiverem cortados
-    paddingRight: 35, // Espaço para os valores nas barras
   },
 
   historyListContainer: { width: '100%', marginTop: 10, marginBottom: 15 }, // Adicionado marginBottom

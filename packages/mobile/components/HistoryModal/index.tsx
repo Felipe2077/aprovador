@@ -79,11 +79,11 @@ export default function HistoryModal({
       iconName = 'remove-outline';
     } else if (diff > 0) {
       text = `${diff.toFixed(0)}% mais caro`;
-      color = Colors.error;
+      color = Colors.dangerText;
       iconName = 'arrow-up-circle-outline';
     } else {
       text = `${Math.abs(diff).toFixed(0)}% mais barato`;
-      color = Colors.success;
+      color = Colors.successText;
       iconName = 'arrow-down-circle-outline';
     }
     return {
@@ -160,11 +160,26 @@ export default function HistoryModal({
     }, // Linhas de fundo mais suaves
   };
   const screenWidth = Dimensions.get('window').width;
-  const horizontalModalContentPadding = styles.modalView.padding || 20;
-  const modalPadding = horizontalModalContentPadding * 2; // Total de padding horizontal (esquerda + direita)
-  const modalPaddingsTotal = horizontalModalContentPadding * 2;
 
-  const chartWidth = screenWidth * 0.9 - modalPaddingsTotal; // Ajuste 0.90 se seu modalView.width for diferente
+  // --- LINHA CORRIGIDA ---
+  // Pega o valor da propriedade 'padding' do modalView.
+  // Se 'padding' não for um número (o que não deveria acontecer com StyleSheet), usa 0 como fallback.
+  const modalViewPaddingValue =
+    typeof styles.modalView.padding === 'number' ? styles.modalView.padding : 0;
+  const modalPaddingsTotal = modalViewPaddingValue * 2; // Total de padding horizontal (esquerda + direita)
+  // -----------------------
+
+  // Largura total que o modalView ocupa (ex: 92% da tela)
+  const modalViewPercentageWidth =
+    parseFloat(styles.modalView.width?.toString().replace('%', '')) / 100 ||
+    0.92;
+  const modalViewTotalWidth = screenWidth * modalViewPercentageWidth;
+
+  // Largura INTERNA do modalView (descontando seus paddings horizontais)
+  const modalViewContentWidth = modalViewTotalWidth - modalPaddingsTotal;
+
+  // Largura para o BarChart
+  const chartWidth = modalViewContentWidth - 10; // Pequena margem de segurança
 
   const renderHistoryItem = ({
     item,
@@ -184,11 +199,11 @@ export default function HistoryModal({
       } else if (item.rawAmount > currentPaymentAmount) {
         itemComparisonText = `↑ ${diff.toFixed(0)}%`;
         itemComparisonIcon = 'arrow-up-circle-outline';
-        itemComparisonColor = Colors.error;
+        itemComparisonColor = Colors.dangerText;
       } else {
         itemComparisonText = `↓ ${Math.abs(diff).toFixed(0)}%`;
         itemComparisonIcon = 'arrow-down-circle-outline';
-        itemComparisonColor = Colors.success;
+        itemComparisonColor = Colors.successText;
       }
     }
     let amountSpecificStyle = {};
@@ -284,7 +299,8 @@ export default function HistoryModal({
                 <BarChart
                   data={chartData}
                   width={chartWidth}
-                  height={200}
+                  height={210}
+                  yAxisSuffix=''
                   yAxisLabel={currentPaymentCurrency === 'BRL' ? 'R$ ' : '$ '}
                   chartConfig={chartConfig}
                   verticalLabelRotation={displayedHistory.length > 4 ? 25 : 0}
