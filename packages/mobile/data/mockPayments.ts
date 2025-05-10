@@ -12,7 +12,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     payee: 'Fornecedor Alpha',
     requesterName: 'Alice', // <-- Campo Corrigido
     requesterDepartment: 'Laboratório de Inovação',
-    dueDate: '2025-04-10',
+    dueDate: '2025-05-30',
     status: PaymentStatus.PENDING,
     description: 'Material de escritório',
     requesterId: 'user_alice_123',
@@ -30,7 +30,7 @@ export const MOCK_PAYMENTS: Payment[] = [
     payee: 'Consultoria Beta',
     requesterName: 'Bob', // <-- Campo Corrigido
     requesterDepartment: 'Operações Estratégicas',
-    dueDate: '2025-04-15',
+    dueDate: '2025-05-10',
     status: PaymentStatus.PENDING,
     description: null,
     requesterId: 'user_bob_456',

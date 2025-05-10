@@ -94,8 +94,8 @@ export default StyleSheet.create({
   },
   historyDate: { fontSize: 15, color: Colors.textSecondary },
   historyAmount: { fontSize: 15, fontWeight: 'bold', color: Colors.text },
-  minAmountText: { color: Colors.success, fontWeight: 'bold' },
-  maxAmountText: { color: Colors.error, fontWeight: 'bold' },
+  minAmountText: { color: Colors.successText, fontWeight: 'bold' },
+  maxAmountText: { color: Colors.dangerText, fontWeight: 'bold' },
   itemComparisonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
