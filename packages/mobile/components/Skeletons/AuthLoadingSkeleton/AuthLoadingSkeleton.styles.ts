@@ -1,6 +1,6 @@
 // packages/mobile/components/AuthLoadingSkeleton/AuthLoadingSkeleton.styles.ts
 import { Dimensions, StyleSheet } from 'react-native';
-import Colors from '../../constants/Colors'; // Ajuste o caminho
+import Colors from '../../../constants/Colors'; // Ajuste o caminho
 
 const screenWidth = Dimensions.get('window').width;
 

@@ -1,3 +1,4 @@
+import AuthLoadingSkeleton from '@/components/Skeletons/AuthLoadingSkeleton';
 import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -5,7 +6,6 @@ import * as SystemUI from 'expo-system-ui';
 import React, { useEffect } from 'react';
 import Colors from '../constants/Colors';
 import { useAuthStore } from '../store/authStore';
-import AuthLoadingSkeleton from '@/components/AuthLoadingSkeleton';
 
 const AppDarkTheme = {
   ...DarkTheme,

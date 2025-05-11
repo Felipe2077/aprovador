@@ -2,7 +2,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import Colors from '../../constants/Colors'; // Ajuste o caminho se necessário
+import Colors from '../../../constants/Colors'; // Ajuste o caminho se necessário
 import styles from './AuthLoadingSkeleton.styles';
 
 const AuthLoadingSkeleton = () => {
