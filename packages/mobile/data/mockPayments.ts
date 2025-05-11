@@ -82,12 +82,12 @@ export const MOCK_PAYMENTS: Payment[] = [
     amount: 450.0,
     currency: 'BRL',
     payee: 'Agência Criativa Delta',
-    requesterName: 'Diana', // <-- Campo Corrigido
+    requesterName: 'Angela', // <-- Campo Corrigido
     requesterDepartment: 'Marketing Digital',
     dueDate: '2025-04-12',
     status: PaymentStatus.PENDING,
     description: 'Campanha Redes Sociais',
-    requesterId: 'user_diana_101',
+    requesterId: 'user_Angela_101',
     createdAt: new Date('2025-04-05T16:00:00Z'),
     updatedAt: new Date('2025-04-05T16:00:00Z'),
     approverId: null,

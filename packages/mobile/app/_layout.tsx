@@ -5,6 +5,7 @@ import * as SystemUI from 'expo-system-ui';
 import React, { useEffect } from 'react';
 import Colors from '../constants/Colors';
 import { useAuthStore } from '../store/authStore';
+import AuthLoadingSkeleton from '@/components/AuthLoadingSkeleton';
 
 const AppDarkTheme = {
   ...DarkTheme,
@@ -37,7 +38,6 @@ export default function RootLayout() {
 
     if (isLoadingAuth) {
       console.log('Auth Effect: Still loading auth status.');
-
       return;
     }
 
@@ -61,7 +61,7 @@ export default function RootLayout() {
 
   if (isLoadingAuth) {
     // return <SplashScreenComponent />; // Ou simplesmente null
-    return null; // Ou um ActivityIndicator tela cheia
+    return <AuthLoadingSkeleton />; // Ou um ActivityIndicator tela cheia
   }
 
   useEffect(() => {
