@@ -15,7 +15,7 @@ O sistema é construído utilizando uma arquitetura Monorepo, gerenciada com PNP
 ## 3.2. Diagrama de Arquitetura de Alto Nível
 
 _Diagrama simples de exemplo de arquitetura:_
-![alt text](image.png)
+![diagrama](image.png)
 
 **Exemplo de Representação Textual:**
 
