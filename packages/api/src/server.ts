@@ -1,3 +1,4 @@
+// packages/api/src/server.ts
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import fastify from 'fastify';
 import authPlugin from './plugins/auth';

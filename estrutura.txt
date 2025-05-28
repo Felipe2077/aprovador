@@ -1,0 +1,147 @@
+.
+├── docs
+│   ├── 01-INTRODUCAO_E_VISAO_GERAL.md
+│   ├── 02-REQUISITOS_DO_SISTEMA.md
+│   ├── 03-ARQUITETURA_DA_SOLUCAO.md
+│   ├── 04-FUNCIONALIDADES_DETALHADAS.md
+│   ├── 05-API_BACKEND.md
+│   ├── 06-APLICATIVO_MOBILE.md
+│   ├── 07-SETUP_DESENVOLVIMENTO.md
+│   └── image.png
+├── estrutura.txt
+├── .gitignore
+├── package.json
+├── packages
+│   ├── api
+│   │   ├── aprovador.code-workspace
+│   │   ├── .env
+│   │   ├── .env.example
+│   │   ├── .gitignore
+│   │   ├── package.json
+│   │   ├── prisma
+│   │   │   ├── migrations
+│   │   │   │   ├── 20250406154050_init
+│   │   │   │   │   └── migration.sql
+│   │   │   │   └── migration_lock.toml
+│   │   │   └── schema.prisma
+│   │   ├── src
+│   │   │   ├── config
+│   │   │   │   └── env.schema.ts
+│   │   │   ├── lib
+│   │   │   │   ├── authUtils.ts
+│   │   │   │   ├── hash.ts
+│   │   │   │   └── prisma.ts
+│   │   │   ├── plugins
+│   │   │   │   ├── auth.ts
+│   │   │   │   ├── cors.ts
+│   │   │   │   ├── env.ts
+│   │   │   │   ├── helmet.ts
+│   │   │   │   ├── jwt.ts
+│   │   │   │   └── swagger.ts
+│   │   │   ├── routes
+│   │   │   │   ├── auth.ts
+│   │   │   │   └── health.ts
+│   │   │   ├── server.ts
+│   │   │   └── types
+│   │   │       └── fastify.d.ts
+│   │   └── tsconfig.json
+│   ├── mobile
+│   │   ├── app
+│   │   │   ├── (auth)
+│   │   │   │   ├── _layout.tsx
+│   │   │   │   └── login.tsx
+│   │   │   ├── +html.tsx
+│   │   │   ├── _layout.tsx
+│   │   │   ├── payment
+│   │   │   │   └── [id].tsx
+│   │   │   └── (tabs)
+│   │   │       ├── index.tsx
+│   │   │       └── _layout.tsx
+│   │   ├── app.json
+│   │   ├── assets
+│   │   │   ├── fonts
+│   │   │   │   └── SpaceMono-Regular.ttf
+│   │   │   └── images
+│   │   │       ├── adaptive-icon.png
+│   │   │       ├── favicon.png
+│   │   │       ├── icon.png
+│   │   │       └── splash-icon.png
+│   │   ├── babel.config.js
+│   │   ├── components
+│   │   │   ├── AppButton
+│   │   │   │   ├── AppButton.styles.ts
+│   │   │   │   └── index.tsx
+│   │   │   ├── ApprovalFlow
+│   │   │   │   ├── ApprovalFlow.styles.ts
+│   │   │   │   └── index.tsx
+│   │   │   ├── AttachmentList
+│   │   │   │   ├── AttachmentList.styles.ts
+│   │   │   │   └── index.tsx
+│   │   │   ├── CommentHistory
+│   │   │   │   ├── CommentHistory.styles.ts
+│   │   │   │   └── index.tsx
+│   │   │   ├── ExternalLink.tsx
+│   │   │   ├── HistoryModal
+│   │   │   │   ├── HistoryModal.styles.ts
+│   │   │   │   └── index.tsx
+│   │   │   ├── PaymentActionButtons
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── PaymentActionButtons.styles.ts
+│   │   │   ├── PaymentDetailCard
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── PaymentDetailCard.styles.ts
+│   │   │   ├── PaymentListItem
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── PaymentListItem.styles.ts
+│   │   │   ├── RejectionModal
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── RejectionModal.styles.ts
+│   │   │   ├── Skeletons
+│   │   │   │   ├── AuthLoadingSkeleton
+│   │   │   │   │   ├── AuthLoadingSkeleton.styles.ts
+│   │   │   │   │   └── index.tsx
+│   │   │   │   └── PaymentDetailSkeleton
+│   │   │   │       ├── index.tsx
+│   │   │   │       └── PaymentDetailSkeleton.styles.ts
+│   │   │   ├── useClientOnlyValue.ts
+│   │   │   └── useColorScheme.ts
+│   │   ├── constants
+│   │   │   ├── Colors.ts
+│   │   │   └── formatCurrency.ts
+│   │   ├── data
+│   │   │   └── mockPayments.ts
+│   │   ├── .expo
+│   │   │   ├── devices.json
+│   │   │   ├── README.md
+│   │   │   └── types
+│   │   │       └── router.d.ts
+│   │   ├── expo-env.d.ts
+│   │   ├── .gitignore
+│   │   ├── package.json
+│   │   ├── services
+│   │   │   └── authService.ts
+│   │   ├── store
+│   │   │   ├── authStore.ts
+│   │   │   └── paymentStore.ts
+│   │   ├── styles
+│   │   │   └── screens
+│   │   │       ├── AuthLogin.styles.ts
+│   │   │       ├── [id].styles.ts
+│   │   │       └── TabsIndex.styles.ts
+│   │   └── tsconfig.json
+│   └── shared-types
+│       ├── package.json
+│       ├── src
+│       │   ├── enums
+│       │   │   └── entities.enums.ts
+│       │   ├── index.ts
+│       │   └── types
+│       │       ├── payment.types.ts
+│       │       └── user.types.ts
+│       └── tsconfig.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── README.md
+└── tsconfig.base.json
+
+45 directories, 99 files

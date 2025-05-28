@@ -1,3 +1,4 @@
+//packages/mobile/app/_layout.tsx
 import AuthLoadingSkeleton from '@/components/Skeletons/AuthLoadingSkeleton';
 import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack, useRouter, useSegments } from 'expo-router';

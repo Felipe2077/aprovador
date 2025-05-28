@@ -1,4 +1,4 @@
-// components/PaymentListItem.tsx
+// packages/mobile/components/PaymentListItem/index.tsx
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';

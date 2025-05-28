@@ -1,4 +1,4 @@
-
+// packages/api/prisma/schema.prisma
 generator client {
   provider = "prisma-client-js" // Diz para gerar um cliente JS/TS
 }
