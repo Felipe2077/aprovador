@@ -15,7 +15,7 @@ Os Requisitos Funcionais descrevem as funcionalidades que o sistema deve oferece
 
 ### 2.1.2. Integração e Sincronização com ERP
 
-- **RF-ERP-001:** O sistema (backend) deve ser capaz de consumir uma API do ERP para obter dados de Requisições de Pagamento (APs).
+- **RF-ERP-001:** O sistema (backend) deve ser capaz de consumir dados do ERP para obter dados de Requisições de Pagamento (APs).
 - **RF-ERP-002:** O sistema deve possuir um mecanismo para identificar e processar novas APs criadas no ERP que estejam prontas para o fluxo de aprovação digital.
   - _(Observação: O método – Webhook ou Polling – será definido em conjunto com a equipe do ERP)._
 

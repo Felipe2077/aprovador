@@ -30,7 +30,7 @@ O sistema se destina aos seguintes perfis de usuários dentro da empresa:
 ### 1.4.1. Funcionalidades Incluídas no Escopo:
 
 - Autenticação e Autorização de usuários (potencialmente integrada às credenciais do ERP).
-- Consumo de dados da API do ERP para obter informações das APs.
+- Consumo de dados do ERP atráves de consulta SQL em um banco oracle para obter informações das APs.
 - Sincronização (via Webhook ou Polling) de novas APs do ERP para o nosso sistema.
 - Interface mobile para visualização de APs pendentes, filtradas por usuário/papel.
 - Interface mobile para visualização de detalhes completos da AP (mesclando dados do ERP e do nosso sistema).
