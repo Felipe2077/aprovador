@@ -6,18 +6,28 @@ Este documento descreve a arquitetura de alto nível do sistema "Aprovador de Pa
 
 O sistema é construído utilizando uma arquitetura Monorepo, gerenciada com PNPM Workspaces. Ele é composto pelas seguintes partes principais:
 
-- **Backend (API):** Um servidor Node.js construído com o framework Fastify, responsável por toda a lógica de negócio, autenticação, autorização, gerenciamento do fluxo de aprovação, interação com o banco de dados e comunicação com a API externa do ERP.
-- **Frontend (Aplicativo Mobile):** Um aplicativo mobile multiplataforma desenvolvido com React Native e Expo, que consome a API do backend para fornecer a interface do usuário para solicitantes, aprovadores e o departamento financeiro.
-- **Banco de Dados:** Um banco de dados PostgreSQL para persistir os dados gerenciados pelo nosso sistema (usuários, estado das APs no nosso fluxo, comentários, anexos do app, logs de auditoria).
+- **Backend (API):** Um servidor Node.js construído com o framework Fastify, responsável por toda a lógica de negócio, autenticação, autorização, gerenciamento do fluxo de aprovação, interação com o banco de dados PostgreSQL e **integração direta com o banco Oracle do ERP via consultas SQL**.
+- **Frontend (Aplicativo Mobile):** Um aplicativo mobile multiplataforma desenvolvido com React Native e Expo, que consome a API backend para fornecer a interface do usuário para solicitantes, aprovadores e o departamento financeiro.
+- **Banco de Dados PostgreSQL:** Banco principal para persistir os dados gerenciados pelo nosso sistema (usuários, estado das APs no nosso fluxo, comentários, anexos, logs de auditoria) **e cache rico dos dados do ERP para operação autônoma**.
+- **Banco Oracle ERP:** **Integração read-only via consultas SQL diretas para sincronização de dados de APs, fornecedores, usuários, histórico e anexos**.
 - **Tipos Compartilhados:** Um pacote dedicado (`shared-types`) dentro do monorepo para definir interfaces e Enums TypeScript comuns, garantindo consistência entre o backend e o frontend.
-- **Integração com ERP:** O sistema se integra com uma API externa do ERP (a ser definida) para ler dados iniciais das Requisições de Pagamento (APs). A interação é primariamente de leitura do ERP.
+- **ETL/Sincronização:** **Sistema automatizado de sincronização que executa consultas SQL no Oracle e mantém o PostgreSQL atualizado com dados completos para operação resiliente**.
 
 ## 3.2. Diagrama de Arquitetura de Alto Nível
 
-_Diagrama simples de exemplo de arquitetura:_
-![diagrama](image.png)
+**Arquitetura Resiliente com PostgreSQL Rico:**
 
-**Exemplo de Representação Textual:**
+```
+┌─────────────────┐    ETL Rico     ┌──────────────────┐    API/Mobile   ┌─────────────────┐
+│   Oracle ERP    │ ──────────────→ │   PostgreSQL     │ ──────────────→ │   Aplicativo    │
+│   (GLOBUS)      │                 │   (Cache Rico)   │                 │   Mobile        │
+│                 │                 │                  │                 │                 │
+│ • Source Truth  │                 │ • Dados Completos│                 │ • Sempre        │
+│ • Consultas SQL │                 │ • Operação       │                 │   Funciona      │
+│ • Anexos BLOB   │                 │   Autônoma       │                 │ • Performance   │
+│ • Validação     │                 │ • Anexos Locais  │                 │ • Resiliente    │
+└─────────────────┘                 └──────────────────┘                 └─────────────────┘
+```
 
 ## 3.3. Tecnologias (Stack Tecnológico)
 
@@ -27,8 +37,9 @@ _Diagrama simples de exemplo de arquitetura:_
   - **Runtime:** Node.js (v18+)
   - **Framework Web:** Fastify
   - **Linguagem:** TypeScript
-  - **ORM:** Prisma
-  - **Banco de Dados:** PostgreSQL
+  - **ORM:** **TypeORM (para PostgreSQL e Oracle)**
+  - **Banco de Dados Principal:** PostgreSQL
+  - **Integração ERP:** **Oracle Database (consultas SQL diretas)**
   - **Autenticação:** JWT (JSON Web Tokens)
   - **Documentação API:** Swagger/OpenAPI (via `@fastify/swagger`)
   - **Validação:** Typebox (para schemas Fastify)
@@ -44,19 +55,20 @@ _Diagrama simples de exemplo de arquitetura:_
   - **Efeitos Visuais:** `react-native-skeleton-placeholder`, `react-native-linear-gradient`
 - **Tipos Compartilhados (`packages/shared-types`):**
   - TypeScript
-- **Banco de Dados (Desenvolvimento):**
-  - PostgreSQL rodando em Docker
+- **Banco de Dados:**
+  - **PostgreSQL** (cache rico + dados próprios)
+  - **Oracle** (ERP - read-only via SQL)
 
 ## 3.4. Estrutura de Pastas Principais
 
-_(Descrever brevemente a estrutura de `packages/api/src` e `packages/mobile/app`, `components`, `store`, `constants`, `styles`, e o propósito de `packages/shared-types`)_
-
 - **`packages/api/src/`**:
-  - `config/`: Configurações, como schemas de variáveis de ambiente.
-  - `lib/`: Utilitários de baixo nível (ex: hash de senha, instância do Prisma).
+  - `config/`: Configurações, como schemas de variáveis de ambiente **e conexões de banco (PostgreSQL + Oracle)**.
+  - `lib/`: Utilitários de baixo nível (ex: hash de senha, instâncias do TypeORM para PostgreSQL e Oracle).
   - `plugins/`: Plugins Fastify para funcionalidades transversais (CORS, JWT, Auth, Swagger).
   - `routes/`: Definição dos endpoints da API, agrupados por recurso.
-  - `services/`: Lógica de negócio e interação com o banco/outras APIs (a ser expandido).
+  - `services/`: Lógica de negócio, **ETL de sincronização Oracle → PostgreSQL**, e interação com os bancos.
+  - **`entities/`**: Entidades TypeORM para PostgreSQL e Oracle.
+  - **`jobs/`**: Jobs de sincronização e ETL automatizados.
   - `server.ts`: Ponto de entrada, configuração e inicialização do servidor Fastify.
 - **`packages/mobile/`**:
   - `app/`: Estrutura de rotas (Expo Router).
@@ -66,9 +78,9 @@ _(Descrever brevemente a estrutura de `packages/api/src` e `packages/mobile/app`
   - `context/`: Contextos React (ex: AuthContext, se criado).
   - `data/`: Dados mock (usados no desenvolvimento inicial).
   - `services/`: Funções para interagir com a API backend.
-  * `store/`: Lógica de gerenciamento de estado global (Zustand).
-  * `styles/`: Arquivos de estilos reutilizáveis ou específicos de telas/componentes.
-  * `theme/`: Definições de tema (ex: AppDarkTheme).
+  - `store/`: Lógica de gerenciamento de estado global (Zustand).
+  - `styles/`: Arquivos de estilos reutilizáveis ou específicos de telas/componentes.
+  - `theme/`: Definições de tema (ex: AppDarkTheme).
 - **`packages/shared-types/src/`**:
   - `enums/`: Definições de Enums compartilhados.
   - `types/`: Definições de Interfaces TypeScript compartilhadas.
@@ -76,28 +88,27 @@ _(Descrever brevemente a estrutura de `packages/api/src` e `packages/mobile/app`
 
 ## 3.5. Fluxo de Dados Principal (Alto Nível)
 
-1.  Uma Requisição de Pagamento (AP) é criada no sistema **ERP**.
-2.  A **API do ERP** disponibiliza essa AP (via Webhook ou para Polling).
-3.  Nossa **API Backend** consome os dados da AP do ERP e cria/atualiza um registro correspondente em nosso **Banco de Dados PostgreSQL**, marcando-a com um status inicial (ex: "Aguardando Configuração de Fluxo").
-4.  O **Aplicativo Mobile** busca essas APs da nossa API Backend e as exibe para o **Solicitante**.
-5.  O Solicitante, no App Mobile, define a **sequência de aprovadores** para a AP. Essa informação é enviada para nossa API Backend e salva no nosso Banco de Dados. O status da AP muda.
-6.  A AP segue a sequência:
-    - O App Mobile mostra a AP para o **aprovador da vez**.
-    - O Aprovador usa o App Mobile para aprovar ou rejeitar (com motivo).
-    - A ação é enviada para nossa API Backend, que atualiza o status no nosso Banco de Dados e registra o comentário/motivo.
-    - Se rejeitada, a AP volta para o Solicitante no App Mobile.
-    - Se aprovada, avança para o próximo aprovador ou para o Financeiro.
-7.  O **Departamento Financeiro**, usando o App Mobile, visualiza APs totalmente aprovadas, registra o pagamento no nosso sistema e anexa o comprovante. Nossa API Backend salva essas informações.
-8.  _(Opcional: Nossa API Backend poderia ter um mecanismo para tentar refletir um status final no ERP, mas atualmente o escopo é read-only do ERP)._
+1. Uma Requisição de Pagamento (AP) é criada no sistema **Oracle ERP**.
+2. **O sistema ETL (executado a cada 15 minutos) faz consultas SQL diretas no Oracle para identificar APs novas ou modificadas**.
+3. **Os dados são processados e armazenados de forma completa no PostgreSQL, incluindo anexos (BLOB), dados de fornecedores, histórico e metadados**.
+4. O **Aplicativo Mobile** busca dados da nossa **API Backend que consulta principalmente o PostgreSQL (operação local rápida)**.
+5. O **Solicitante** usa o App Mobile para definir a **sequência de aprovadores** para a AP. Essa informação é salva no PostgreSQL.
+6. A AP segue a sequência de aprovação:
+   - O App Mobile mostra a AP para o **aprovador da vez** (dados do PostgreSQL).
+   - **Para operações críticas, o sistema pode validar o estado atual consultando o Oracle diretamente**.
+   - Aprovações/rejeições são salvas no PostgreSQL com histórico completo.
+7. O **Departamento Financeiro** registra pagamentos e anexa comprovantes no sistema (PostgreSQL).
+8. **Sistema opera de forma totalmente autônoma mesmo com Oracle offline, usando dados cached no PostgreSQL**.
 
 ## 3.6. Decisões Arquiteturais Chave (Rationale)
 
 - **Monorepo (PNPM Workspaces):** Facilita o compartilhamento de código (especialmente `shared-types`), a consistência de dependências e a execução de scripts em um ambiente unificado.
 - **Fastify (Backend):** Escolhido por sua alta performance, baixo overhead, extensibilidade via plugins e bom suporte a TypeScript e schemas de validação (Typebox).
-- **Prisma ORM (Backend):** Oferece excelente segurança de tipos, migrações fáceis de gerenciar e uma API de query intuitiva para interagir com o PostgreSQL.
+- **TypeORM (Backend):** **Substituição do Prisma para suportar múltiplas conexões de banco (PostgreSQL + Oracle) com queries SQL diretas quando necessário**.
 - **Expo (Frontend Mobile):** Simplifica o desenvolvimento React Native, oferece um ótimo fluxo de trabalho, acesso a uma vasta gama de APIs nativas e facilita o processo de build e publicação.
 - **Expo Router (Frontend Mobile):** Fornece um sistema de navegação moderno e robusto baseado em arquivos, com bom suporte a layouts e navegação tipada.
 - **Zustand (Frontend Mobile):** Escolhido para gerenciamento de estado global por sua simplicidade, flexibilidade e baixo boilerplate.
 - **TypeScript (Em todo o projeto):** Garante segurança de tipos, melhora a manutenibilidade e a experiência de desenvolvimento em projetos maiores.
-- **Abordagem "API-First" (implícita):** Definir e construir uma API backend robusta primeiro, que depois é consumida pelo frontend.
+- **Arquitetura Resiliente:** **PostgreSQL como cache rico permite operação 100% autônoma, com Oracle como source of truth para sincronização**.
+- **ETL Rico:** **Sincronização completa de dados (incluindo anexos) garante que o sistema nunca pare de funcionar**.
 - **Componentização (Frontend):** Foco em criar componentes reutilizáveis e manter os componentes de tela enxutos.
