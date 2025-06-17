@@ -1,4 +1,3 @@
-// packages/api/src/plugins/env.ts
 import fastifyEnv, { FastifyEnvOptions } from '@fastify/env';
 import fp from 'fastify-plugin';
 import { envSchema } from '../config/env.schema';
@@ -9,7 +8,7 @@ export default fp(async (server) => {
     schema: envSchema,
     dotenv: true,
   };
-  await server.register(fastifyEnv, options); // Use await aqui
+  await server.register(fastifyEnv, options);
   server.log.info('Environment variables plugin registered');
 });
 
@@ -18,10 +17,24 @@ declare module 'fastify' {
     config: {
       PORT: number;
       HOST: string;
-      DATABASE_URL: string;
       JWT_SECRET: string;
       JWT_EXPIRES_IN: string;
-      /* + Futuros */
+
+      // ✅ PostgreSQL
+      POSTGRES_HOST: string;
+      POSTGRES_PORT: number;
+      POSTGRES_USER: string;
+      POSTGRES_PASSWORD: string;
+      POSTGRES_DB: string;
+
+      // ✅ Oracle
+      ORACLE_HOST: string;
+      ORACLE_PORT: number;
+      ORACLE_USER: string;
+      ORACLE_PASSWORD: string;
+      ORACLE_SERVICE_NAME: string;
+
+      NODE_ENV: string;
     };
   }
 }

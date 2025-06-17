@@ -1,9 +1,9 @@
-// packages/api/src/routes/auth.ts
 import { Static, Type } from '@sinclair/typebox';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import { comparePassword } from '../lib/hash';
-import { prisma } from '../lib/prisma';
 import { UserRole } from 'shared-types';
+import { User } from '../entities/postgresql/User.entity';
+import { comparePassword } from '../lib/hash';
+import { pgDataSource } from '../lib/typeorm';
 
 const LoginBodySchema = Type.Object({
   username: Type.String(),
@@ -25,7 +25,8 @@ export default async function authRoutes(
     async (request, reply) => {
       const { username, password } = request.body;
 
-      const user = await prisma.user.findUnique({
+      const userRepo = pgDataSource.getRepository(User);
+      const user = await userRepo.findOne({
         where: { username },
       });
 
@@ -36,8 +37,7 @@ export default async function authRoutes(
       const accessToken = await reply.jwtSign(
         {
           sub: user.id,
-          role: user.role as UserRole, // Diz ao TS: "Trate o user.role do Prisma como o UserRole de shared-types"
-
+          role: user.role as UserRole,
           name: user.name,
         },
         {
@@ -57,7 +57,8 @@ export default async function authRoutes(
     async (request, reply) => {
       const userId = request.user.sub;
 
-      const userProfile = await prisma.user.findUnique({
+      const userRepo = pgDataSource.getRepository(User);
+      const userProfile = await userRepo.findOne({
         where: { id: userId },
         select: {
           id: true,
@@ -76,6 +77,4 @@ export default async function authRoutes(
       return userProfile;
     }
   );
-
-  //TODO Aqui adicionaremos GET /users/me depois
 }
